@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`Aircraft` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `Aircraftid_UNIQUE` ON `airline_db`.`Aircraft` (`Id` ASC) VISIBLE;
+CREATE UNIQUE INDEX `Id_UNIQUE` ON `airline_db`.`Aircraft` (`Id` ASC) VISIBLE;
 
 CREATE INDEX `fk_Aircraft_Airline1_idx` ON `airline_db`.`Aircraft` (`Airline_Id` ASC) VISIBLE;
 
@@ -231,22 +231,16 @@ DROP TABLE IF EXISTS `airline_db`.`Passenger` ;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`Passenger` (
   `Id` INT NOT NULL,
-  `Payment_Id` INT NOT NULL,
-  `Passport_No` VARCHAR(45) NULL,
+  `PassportNumber` VARCHAR(45) NULL DEFAULT NULL,
   `FirstName` VARCHAR(45) NULL,
   `LastName` VARCHAR(45) NULL,
-  PRIMARY KEY (`Id`),
-  CONSTRAINT `fk_Passenger_Payment1`
-    FOREIGN KEY (`Payment_Id`)
-    REFERENCES `airline_db`.`Payment` (`Id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  `CountryCode` VARCHAR(45) NULL,
+  `Email` VARCHAR(45) NULL,
+  PRIMARY KEY (`Id`))
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `idPassengers_UNIQUE` ON `airline_db`.`Passenger` (`Id` ASC) VISIBLE;
-
-CREATE INDEX `fk_Passenger_Payment1_idx` ON `airline_db`.`Passenger` (`Payment_Id` ASC) VISIBLE;
-
+CREATE UNIQUE INDEX `Id_UNIQUE` ON `airline_db`.`Passenger` (`Id` ASC) VISIBLE;
+CREATE UNIQUE INDEX `PassportNumber_UNIQUE` ON `airline_db`.`Passenger` (`PassportNumber` ASC) VISIBLE;
 
 -- -----------------------------------------------------
 -- Table `airline_db`.`Payment`
