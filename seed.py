@@ -32,17 +32,17 @@ def get_airlines(cursor):
 
 ######## AirCraft #######
 
-def create_aircrafts(cursor):  #would it be (airline, cursor)? like you are doing for class?
+def create_aircrafts(airline, cursor):  #would it be (airline, cursor)? like you are doing for class?
 
-    cursor.execute("DELETE FROM Airline")
+    cursor.execute("DELETE FROM Aircraft")
 
-    create_aircrafts_procedure = "CALL airline_db.Aircraft(%s, %s,%s,%d);"
+    create_aircrafts_procedure = "CALL airline_db.Aircraft(%s,%s,%d);"
     #airline_id, name, model, capacity
     aircrafts_data = [
-        (1,"UA", "UA11", 100),
-        (2, "AA", "Alaska12", 120),
-        (3, "SW", "Ch13", 130),
-        (4, "Frontier", "NY14", 180)
+        ("UA", "UA11", 100),
+        ( "AA", "Alaska12", 120),
+        ( "SW", "Ch13", 130),
+        ( "Frontier", "NY14", 180)
     ]
 
     for data in aircrafts_data:
@@ -51,16 +51,27 @@ def create_aircrafts(cursor):  #would it be (airline, cursor)? like you are doin
     return get_airlines(cursor) 
 
 
-def create_aircrafts(cursor):
-    cursor.execute("SELECT * FROM Airline")
+def get_aircrafts(cursor):
+    cursor.execute("SELECT * FROM Aircraft")
     return cursor.fetchall()
 
 
 ###### Class #######
 
-def create_classes_for_airline(airline, cursor):
-    pass
+def create_classes_for_airline(cursor):
+    create_class_procedure= "CALL airline_db.Class(%d,%s);"
+    class_data=[(1,"First Class"),
+                (2,"Business Class"),
+                (3, "Economy Class")
+    ]
+    for data in class_data:
+        cursor.execute(create_class_procedure, class_data)
+        
+    return get_classes(cursor)
 
+def get_classes(cursor):
+    cursor.execute("SELECT * FROM Class")
+    return cursor.fetchall()
 
 def main():
     connection = create_db_connection(
@@ -70,8 +81,8 @@ def main():
 
     airlines = create_airlines(cursor)
 
-    for airline in airlines:
-        create_classes_for_airline(airline,cursor)
+    
+    create_classes_for_airline(cursor)
 
     # Make sure data is committed to the database
     connection.commit()
