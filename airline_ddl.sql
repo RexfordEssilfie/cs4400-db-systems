@@ -23,7 +23,7 @@ USE `airline_db` ;
 DROP TABLE IF EXISTS `airline_db`.`Aircraft` ;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`Aircraft` (
-  `Id` INT NOT NULL,
+  `Id` INT NOT NULL AUTO_INCREMENT,
   `Airline_Id` INT NOT NULL,
   `Name` VARCHAR(45) NULL,
   `Model` VARCHAR(45) NULL,
@@ -67,7 +67,7 @@ CREATE UNIQUE INDEX `Name_UNIQUE` ON `airline_db`.`Airline` (`Name` ASC) VISIBLE
 DROP TABLE IF EXISTS `airline_db`.`Airport` ;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`Airport` (
-  `Id` INT NOT NULL,
+  `Id` INT NOT NULL AUTO_INCREMENT,
   `City` VARCHAR(45) NULL,
   `State` VARCHAR(45) NULL,
   `Abbreviation` VARCHAR(45) NULL,
@@ -83,7 +83,7 @@ CREATE UNIQUE INDEX `AirlineId_UNIQUE` ON `airline_db`.`Airport` (`Id` ASC) VISI
 DROP TABLE IF EXISTS `airline_db`.`BillingDetail` ;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`BillingDetail` (
-  `Id` INT NOT NULL,
+  `Id` INT NOT NULL AUTO_INCREMENT,
   `Airline_Id` INT NOT NULL,
   `User_id` INT NOT NULL,
   `CardNumberLastFourDigit` VARCHAR(45) NULL,
@@ -114,9 +114,9 @@ CREATE INDEX `fk_BillingDetail_User1_idx` ON `airline_db`.`BillingDetail` (`User
 DROP TABLE IF EXISTS `airline_db`.`Class` ;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`Class` (
-  `Id` INT NOT NULL,
+  `Id` INT NOT NULL AUTO_INCREMENT,
   `Name` VARCHAR(45) NULL,
-  `Tier` VARCHAR(45) NULL,
+  `Tier` INT NULL DEFAULT NULL,
   PRIMARY KEY (`Id`))
 ENGINE = InnoDB;
 
@@ -160,7 +160,7 @@ CREATE INDEX `fk_Confirmation_Passenger1_idx` ON `airline_db`.`Confirmation` (`P
 DROP TABLE IF EXISTS `airline_db`.`Flight` ;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`Flight` (
-  `Id` INT NOT NULL,
+  `Id` INT NOT NULL AUTO_INCREMENT, 
   `DepartureGate_Id` INT NOT NULL,
   `ArrivalGate_Id` INT NOT NULL,
   `Departure_date` DATETIME NULL,
@@ -200,7 +200,7 @@ CREATE INDEX `fk_Flight_Airline1_idx` ON `airline_db`.`Flight` (`Airline_Id` ASC
 DROP TABLE IF EXISTS `airline_db`.`Gate` ;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`Gate` (
-  `Id` INT NOT NULL,
+  `Id` INT NOT NULL AUTO_INCREMENT,
   `Terminal_Id` INT NOT NULL,
   `Name` VARCHAR(45) NULL,
   `Longitude` VARCHAR(45) NULL,
@@ -460,6 +460,60 @@ ENGINE = InnoDB;
 CREATE UNIQUE INDEX `id_UNIQUE` ON `airline_db`.`User` (`id` ASC) VISIBLE;
 
 CREATE INDEX `fk_User_Airline1_idx` ON `airline_db`.`User` (`Airline_Id` ASC) VISIBLE;
+
+
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.create_airline
+-- -----------------------------------------------------
+
+DELIMITER $$
+CREATE PROCEDURE `create_airline`(name varchar(45), city varchar(45), state varchar(45))
+BEGIN
+	INSERT INTO `airline_db`.`Airline`
+	(`Name`,
+	`City`,
+	`State`)
+	VALUES
+	(
+	name,
+	city,
+	state);
+END$$
+DELIMITER ;
+
+
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.create_airline
+-- -----------------------------------------------------
+
+DELIMITER $$
+CREATE PROCEDURE `find_available_tickets`(in flight_id int)
+BEGIN
+  SELECT * from Ticket left join Confirmation on Ticket.Id = Confirmation.Ticket_id 
+  WHERE Confirmation.Status != "Active";
+END$$
+DELIMITER ;
+
+
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.create_class
+-- -----------------------------------------------------
+
+DELIMITER $$
+CREATE PROCEDURE `create_class` (in name varchar(45), in tier int)
+BEGIN
+	INSERT INTO `airline_db`.`Class`
+	(`Name`,
+	`Tier`)
+	VALUES
+	(name,
+    tier
+	);
+END$$
+DELIMITER ;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
