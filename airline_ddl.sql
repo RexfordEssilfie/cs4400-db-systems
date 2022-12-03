@@ -115,10 +115,11 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`Class` (
   `Name` VARCHAR(45) NULL,
   `Tier` INT NULL DEFAULT NULL,
   PRIMARY KEY (`Id`),
+  UNIQUE KEY `Airline1_Name1_idx` (`Airline_Id`, `Name`),
   CONSTRAINT `fk_Class_Airline1` FOREIGN KEY (`Airline_Id`) REFERENCES `airline_db`.`Airline` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `idClass_UNIQUE` ON `airline_db`.`Class` (`Id` ASC) VISIBLE;
+CREATE UNIQUE INDEX `Id_UNIQUE` ON `airline_db`.`Class` (`Id` ASC) VISIBLE;
 
 CREATE INDEX `fk_Class_Airline1_idx` ON `airline_db`.`Class` (`Airline_Id` ASC) VISIBLE;
 
