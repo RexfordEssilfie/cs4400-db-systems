@@ -76,11 +76,13 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`Airport` (
   `Id` INT NOT NULL AUTO_INCREMENT,
   `City` VARCHAR(45) NULL,
   `State` VARCHAR(45) NULL,
-  `Abbreviation` VARCHAR(45) NULL,
+  `Abbreviation` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `AirlineId_UNIQUE` ON `airline_db`.`Airport` (`Id` ASC) VISIBLE;
+CREATE UNIQUE INDEX `Id_UNIQUE` ON `airline_db`.`Airport` (`Id` ASC) VISIBLE;
+
+CREATE UNIQUE INDEX `Abbreviation_UNIQUE` ON `airline_db`.`Airport` (`Abbreviation` ASC) VISIBLE;
 
 -- -----------------------------------------------------
 -- Table `airline_db`.`BillingDetail`
