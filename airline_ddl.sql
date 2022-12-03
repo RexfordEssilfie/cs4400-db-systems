@@ -91,20 +91,18 @@ DROP TABLE IF EXISTS `airline_db`.`BillingDetail`;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`BillingDetail` (
   `Id` INT NOT NULL AUTO_INCREMENT,
-  `Airline_Id` INT NOT NULL,
-  `User_id` INT NOT NULL,
+  `User_Id` INT NULL,
   `CardNumberLastFourDigit` VARCHAR(45) NULL,
-  `CardToken` VARCHAR(45) NULL,
+  `CardToken` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`Id`),
-  CONSTRAINT `fk_Customer_Airline1` FOREIGN KEY (`Airline_Id`) REFERENCES `airline_db`.`Airline` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_BillingDetail_User1` FOREIGN KEY (`User_id`) REFERENCES `airline_db`.`User` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_BillingDetail_User1` FOREIGN KEY (`User_Id`) REFERENCES `airline_db`.`User` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `idCustomer_UNIQUE` ON `airline_db`.`BillingDetail` (`Id` ASC) VISIBLE;
+CREATE UNIQUE INDEX `Id_UNIQUE` ON `airline_db`.`BillingDetail` (`Id` ASC) VISIBLE;
 
-CREATE INDEX `fk_Customer_Airline1_idx` ON `airline_db`.`BillingDetail` (`Airline_Id` ASC) VISIBLE;
+CREATE UNIQUE INDEX `CardToken_UNIQUE` ON `airline_db`.`BillingDetail` (`CardToken` ASC) VISIBLE;
 
-CREATE INDEX `fk_BillingDetail_User1_idx` ON `airline_db`.`BillingDetail` (`User_id` ASC) VISIBLE;
+CREATE INDEX `fk_BillingDetail_User1_idx` ON `airline_db`.`BillingDetail` (`User_Id` ASC) VISIBLE;
 
 -- -----------------------------------------------------
 -- Table `airline_db`.`Class`
