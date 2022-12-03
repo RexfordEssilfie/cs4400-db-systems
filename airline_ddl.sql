@@ -2,6 +2,9 @@
 -- Thu Dec  1 16:32:17 2022
 -- Model: New Model    Version: 1.0
 -- MySQL Workbench Forward Engineering
+-- -----------------------------------------------------
+-- SAVE OLD WORKBENCH SETTINGS
+-- -----------------------------------------------------
 SET
   @OLD_UNIQUE_CHECKS = @ @UNIQUE_CHECKS,
   UNIQUE_CHECKS = 0;
@@ -410,6 +413,9 @@ VALUES
 
 END $ $ DELIMITER;
 
+-- -----------------------------------------------------
+-- RESTORE WORKBENCH SETTINGS
+-- -----------------------------------------------------
 SET
   SQL_MODE = @OLD_SQL_MODE;
 
