@@ -206,6 +206,7 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`Gate` (
   `Longitude` VARCHAR(45) NULL,
   `Latitude` VARCHAR(45) NULL,
   PRIMARY KEY (`Id`),
+  UNIQUE KEY `Terminal1_Name1_idx` (`Terminal_Id`,`Name`),
   CONSTRAINT `fk_Gate_Terminal1`
     FOREIGN KEY (`Terminal_Id`)
     REFERENCES `airline_db`.`Terminal` (`Id`)
