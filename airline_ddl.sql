@@ -154,7 +154,7 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`Confirmation` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `Confirmation_Id_UNIQUE` ON `airline_db`.`Confirmation` (`Confirmation_Name` ASC) VISIBLE;
+CREATE UNIQUE INDEX `Name_UNIQUE` ON `airline_db`.`Confirmation` (`Confirmation_Name` ASC) VISIBLE;
 
 CREATE INDEX `fk_Confirmation_Ticket1_idx` ON `airline_db`.`Confirmation` (`Ticket_Id` ASC) VISIBLE;
 
@@ -425,22 +425,22 @@ DROP TABLE IF EXISTS `airline_db`.`Trip` ;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`Trip` (
   `Flight_Id` INT NOT NULL,
-  `Confirmation_Confirmation_Id` INT NOT NULL,
+  `Confirmation_Name` INT NOT NULL,
   `Id` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`Flight_Id`, `Confirmation_Confirmation_Id`, `Id`),
+  PRIMARY KEY (`Flight_Id`, `Confirmation_Name`, `Id`),
   CONSTRAINT `fk_Flight_has_Confirmation_Flight1`
     FOREIGN KEY (`Flight_Id`)
     REFERENCES `airline_db`.`Flight` (`Id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Flight_has_Confirmation_Confirmation1`
-    FOREIGN KEY (`Confirmation_Confirmation_Id`)
+    FOREIGN KEY (`Confirmation_Name`)
     REFERENCES `airline_db`.`Confirmation` (`Confirmation_Name`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_Flight_has_Confirmation_Confirmation1_idx` ON `airline_db`.`Trip` (`Confirmation_Confirmation_Id` ASC) VISIBLE;
+CREATE INDEX `fk_Flight_has_Confirmation_Confirmation1_idx` ON `airline_db`.`Trip` (`Confirmation_Name` ASC) VISIBLE;
 
 CREATE INDEX `fk_Flight_has_Confirmation_Flight1_idx` ON `airline_db`.`Trip` (`Flight_Id` ASC) VISIBLE;
 
