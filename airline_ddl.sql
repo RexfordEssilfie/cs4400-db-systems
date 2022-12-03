@@ -53,6 +53,7 @@ DROP TABLE IF EXISTS `airline_db`.`Airline`;
 CREATE TABLE IF NOT EXISTS `airline_db`.`Airline` (
   `Id` INT NOT NULL AUTO_INCREMENT,
   `Name` VARCHAR(45) NOT NULL,
+  `Code` VARCHAR(4) NOT NULL,
   `City` VARCHAR(45) NULL,
   `State` VARCHAR(45) NULL,
   `Longitude` VARCHAR(45) NULL,
@@ -60,9 +61,11 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`Airline` (
   PRIMARY KEY (`Id`)
 ) ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `idAirline_UNIQUE` ON `airline_db`.`Airline` (`Id` ASC) VISIBLE;
+CREATE UNIQUE INDEX `Id_UNIQUE` ON `airline_db`.`Airline` (`Id` ASC) VISIBLE;
 
 CREATE UNIQUE INDEX `Name_UNIQUE` ON `airline_db`.`Airline` (`Name` ASC) VISIBLE;
+
+CREATE UNIQUE INDEX `Code_UNIQUE` ON `airline_db`.`Airline` (`Code` ASC) VISIBLE;
 
 -- -----------------------------------------------------
 -- Table `airline_db`.`Airport`
