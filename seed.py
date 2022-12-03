@@ -9,7 +9,7 @@ def create_db_connection(user=None, password=None, db=None):
 
 def create_airlines(cursor):
 
-    cursor.execute("DELETE FROM Airline") #????
+    cursor.execute("DELETE FROM Airline") #why ????
 
     create_airline_procedure = "CALL airline_db.create_airline(%s, %s,%s);"
 
@@ -23,7 +23,7 @@ def create_airlines(cursor):
     for data in airlines_data:
         cursor.execute(create_airline_procedure, data)
 
-    return get_airlines(cursor) #why calling this here?
+    return get_airlines(cursor) 
 
 
 def get_airlines(cursor):
@@ -32,7 +32,7 @@ def get_airlines(cursor):
 
 ######## AirCraft #######
 
-def create_aircrafts(cursor):
+def create_aircrafts(cursor):  #would it be (airline, cursor)? like you are doing for class?
 
     cursor.execute("DELETE FROM Airline")
 
@@ -48,7 +48,7 @@ def create_aircrafts(cursor):
     for data in aircrafts_data:
         cursor.execute(create_aircrafts_procedure, data)
 
-    return get_airlines(cursor) #why calling this here?
+    return get_airlines(cursor) 
 
 
 def create_aircrafts(cursor):
@@ -71,7 +71,7 @@ def main():
     airlines = create_airlines(cursor)
 
     for airline in airlines:
-        create_classes_for_airline(airline)
+        create_classes_for_airline(airline,cursor)
 
     # Make sure data is committed to the database
     connection.commit()
