@@ -384,13 +384,14 @@ CREATE INDEX `fk_User_Airline1_idx` ON `airline_db`.`User` (`Airline_Id` ASC) VI
 DELIMITER $$ 
 CREATE PROCEDURE `create_airline`(
   name varchar(45),
+  code varchar(4),
   city varchar(45),
   state varchar(45)
 ) BEGIN
 INSERT INTO
-  `airline_db`.`Airline` (`Name`, `City`, `State`)
+  `airline_db`.`Airline` (`Name`, `Code`,`City`, `State`)
 VALUES
-  (name, city, state);
+  (name, code,city, state);
 END 
 $$ DELIMITER;
 

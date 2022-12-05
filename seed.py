@@ -1,4 +1,5 @@
 from datetime import date, datetime, timedelta
+import mysql
 import mysql.connector
 
 
@@ -11,13 +12,13 @@ def create_airlines(cursor):
 
     cursor.execute("DELETE FROM Airline") #why ????
 
-    create_airline_procedure = "CALL airline_db.create_airline(%s, %s,%s);"
-
+    create_airline_procedure = "CALL airline_db.create_airline(%s, %s,%s,%s);"
+   #name,code,city,state
     airlines_data = [
-        ("United Airlines", "Atlanta", "GA"),
-        ("Alaska Airlines", "Alaska", "AL"),
-        ("South West Airlines", "Chicago", "IL"),
-        ("Frontier", "New York", "NY")
+        ("United Airlines","UA12" ,"Atlanta", "GA"),
+        ("Alaska Airlines","AA12" ,"Alaska", "AL"),
+        ("South West Airlines","SWA1" ,"Chicago", "IL"),
+        ("Frontier","FA12" ,"New York", "NY")
     ]
 
     for data in airlines_data:
@@ -75,14 +76,15 @@ def get_classes(cursor):
 
 def main():
     connection = create_db_connection(
-        user='root', password='mysqladmin', db='airline_db')
+        #user='root', password='mysqladmin', db='airline_db')
+        user='root', password='root3069', db='airline_db')
 
     cursor = connection.cursor()
-
-    airlines = create_airlines(cursor)
+    print('hi')
+    create_airlines(cursor)
 
     
-    create_classes_for_airline(cursor)
+    #create_classes_for_airline(cursor)
 
     # Make sure data is committed to the database
     connection.commit()
