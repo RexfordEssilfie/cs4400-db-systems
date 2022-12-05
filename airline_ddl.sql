@@ -159,7 +159,7 @@ DROP TABLE IF EXISTS `airline_db`.`Flight`;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`Flight` (
   `Id` INT NOT NULL AUTO_INCREMENT,
-  `Airline_Id` INT NOT NULL,
+  `Aircraft_Id` INT NOT NULL,
   `Name` VARCHAR(45) NULL,
   `DepartureGate_Id` INT NOT NULL,
   `ArrivalGate_Id` INT NOT NULL,
@@ -168,7 +168,7 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`Flight` (
   PRIMARY KEY (`Id`),
   CONSTRAINT `fk_Flight_Gate1` FOREIGN KEY (`DepartureGate_Id`) REFERENCES `airline_db`.`Gate` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fk_Flight_Gate2` FOREIGN KEY (`ArrivalGate_Id`) REFERENCES `airline_db`.`Gate` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Flight_Airline1` FOREIGN KEY (`Airline_Id`) REFERENCES `airline_db`.`Airline` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `fk_Flight_Aircraft1` FOREIGN KEY (`Aircraft_Id`) REFERENCES `airline_db`.`Aircraft` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `FlightId_UNIQUE` ON `airline_db`.`Flight` (`Id` ASC) VISIBLE;
@@ -177,7 +177,7 @@ CREATE INDEX `fk_Flight_Gate1_idx` ON `airline_db`.`Flight` (`DepartureGate_Id` 
 
 CREATE INDEX `fk_Flight_Gate2_idx` ON `airline_db`.`Flight` (`ArrivalGate_Id` ASC) VISIBLE;
 
-CREATE INDEX `fk_Flight_Airline1_idx` ON `airline_db`.`Flight` (`Airline_Id` ASC) VISIBLE;
+CREATE INDEX `fk_Flight_Aircraft1_idx` ON `airline_db`.`Flight` (`Aircraft_Id` ASC) VISIBLE;
 
 -- -----------------------------------------------------
 -- Table `airline_db`.`Gate`
@@ -340,24 +340,6 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`Ticket_Payment` (
 CREATE INDEX `fk_Ticket_has_Payment_Payment1_idx` ON `airline_db`.`Ticket_Payment` (`Payment_Id` ASC) VISIBLE;
 
 CREATE INDEX `fk_Ticket_has_Payment_Ticket1_idx` ON `airline_db`.`Ticket_Payment` (`Ticket_Id` ASC) VISIBLE;
-
--- -----------------------------------------------------
--- Table `airline_db`.`Trip`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `airline_db`.`Trip`;
-
-CREATE TABLE IF NOT EXISTS `airline_db`.`Trip` (
-  `Flight_Id` INT NOT NULL,
-  `Confirmation_Name` INT NOT NULL,
-  `Id` INT NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`Flight_Id`, `Confirmation_Name`, `Id`),
-  CONSTRAINT `fk_Flight_has_Confirmation_Flight1` FOREIGN KEY (`Flight_Id`) REFERENCES `airline_db`.`Flight` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Flight_has_Confirmation_Confirmation1` FOREIGN KEY (`Confirmation_Name`) REFERENCES `airline_db`.`Confirmation` (`Confirmation_Name`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE = InnoDB;
-
-CREATE INDEX `fk_Flight_has_Confirmation_Confirmation1_idx` ON `airline_db`.`Trip` (`Confirmation_Name` ASC) VISIBLE;
-
-CREATE INDEX `fk_Flight_has_Confirmation_Flight1_idx` ON `airline_db`.`Trip` (`Flight_Id` ASC) VISIBLE;
 
 -- -----------------------------------------------------
 -- Table `airline_db`.`User`
