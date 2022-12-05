@@ -5,16 +5,19 @@
 -- -----------------------------------------------------
 -- SAVE OLD WORKBENCH SETTINGS
 -- -----------------------------------------------------
+
+DROP DATABASE IF EXISTS `airline_db`;
+
 SET
-  @OLD_UNIQUE_CHECKS = @ @UNIQUE_CHECKS,
+  @OLD_UNIQUE_CHECKS = @@UNIQUE_CHECKS,
   UNIQUE_CHECKS = 0;
 
 SET
-  @OLD_FOREIGN_KEY_CHECKS = @ @FOREIGN_KEY_CHECKS,
+  @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS,
   FOREIGN_KEY_CHECKS = 0;
 
 SET
-  @OLD_SQL_MODE = @ @SQL_MODE,
+  @OLD_SQL_MODE = @@SQL_MODE,
   SQL_MODE = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
@@ -39,7 +42,7 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`Aircraft` (
   `Model` VARCHAR(45) NULL,
   `Capacity` VARCHAR(45) NULL,
   PRIMARY KEY (`Id`),
-  CONSTRAINT `fk_Aircraft_Airline1` FOREIGN KEY (`Airline_Id`) REFERENCES `airline_db`.`Airline` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_Aircraft_Airline1` FOREIGN KEY (`Airline_Id`) REFERENCES `airline_db`.`Airline` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `Id_UNIQUE` ON `airline_db`.`Aircraft` (`Id` ASC) VISIBLE;
@@ -98,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`BillingDetail` (
   `CardNumberLastFourDigit` VARCHAR(45) NULL,
   `CardToken` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`Id`),
-  CONSTRAINT `fk_BillingDetail_User1` FOREIGN KEY (`User_Id`) REFERENCES `airline_db`.`User` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_BillingDetail_User1` FOREIGN KEY (`User_Id`) REFERENCES `airline_db`.`User` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `Id_UNIQUE` ON `airline_db`.`BillingDetail` (`Id` ASC) VISIBLE;
@@ -119,7 +122,7 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`Class` (
   `Tier` INT NULL DEFAULT NULL,
   PRIMARY KEY (`Id`),
   UNIQUE KEY `Airline1_Name1_idx` (`Airline_Id`, `Name`),
-  CONSTRAINT `fk_Class_Airline1` FOREIGN KEY (`Airline_Id`) REFERENCES `airline_db`.`Airline` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_Class_Airline1` FOREIGN KEY (`Airline_Id`) REFERENCES `airline_db`.`Airline` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `Id_UNIQUE` ON `airline_db`.`Class` (`Id` ASC) VISIBLE;
@@ -138,8 +141,8 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`Confirmation` (
   `Ticket_Id` INT NOT NULL,
   `Passenger_Id` INT NOT NULL,
   PRIMARY KEY (`Confirmation_Name`),
-  CONSTRAINT `fk_Confirmation_Ticket1` FOREIGN KEY (`Ticket_Id`) REFERENCES `airline_db`.`Ticket` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Confirmation_Passenger1` FOREIGN KEY (`Passenger_Id`) REFERENCES `airline_db`.`Passenger` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_Confirmation_Ticket1` FOREIGN KEY (`Ticket_Id`) REFERENCES `airline_db`.`Ticket` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Confirmation_Passenger1` FOREIGN KEY (`Passenger_Id`) REFERENCES `airline_db`.`Passenger` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `Name_UNIQUE` ON `airline_db`.`Confirmation` (`Confirmation_Name` ASC) VISIBLE;
@@ -155,16 +158,16 @@ DROP TABLE IF EXISTS `airline_db`.`Flight`;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`Flight` (
   `Id` INT NOT NULL AUTO_INCREMENT,
-  `DepartureGate_Id` INT NOT NULL,
-  `ArrivalGate_Id` INT NOT NULL,
-  `Departure_date` DATETIME NULL,
-  `Arrival_date` DATETIME NULL,
   `Airline_Id` INT NOT NULL,
   `Name` VARCHAR(45) NULL,
+  `DepartureGate_Id` INT NOT NULL,
+  `ArrivalGate_Id` INT NOT NULL,
+  `DepartureDate` DATETIME NULL,
+  `ArrivalDate` DATETIME NULL,
   PRIMARY KEY (`Id`),
-  CONSTRAINT `fk_Flight_Gate1` FOREIGN KEY (`DepartureGate_Id`) REFERENCES `airline_db`.`Gate` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Flight_Gate2` FOREIGN KEY (`ArrivalGate_Id`) REFERENCES `airline_db`.`Gate` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Flight_Airline1` FOREIGN KEY (`Airline_Id`) REFERENCES `airline_db`.`Airline` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_Flight_Gate1` FOREIGN KEY (`DepartureGate_Id`) REFERENCES `airline_db`.`Gate` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Flight_Gate2` FOREIGN KEY (`ArrivalGate_Id`) REFERENCES `airline_db`.`Gate` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Flight_Airline1` FOREIGN KEY (`Airline_Id`) REFERENCES `airline_db`.`Airline` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `FlightId_UNIQUE` ON `airline_db`.`Flight` (`Id` ASC) VISIBLE;
@@ -188,7 +191,7 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`Gate` (
   `Latitude` VARCHAR(45) NULL,
   PRIMARY KEY (`Id`),
   UNIQUE KEY `Terminal1_Name1_idx` (`Terminal_Id`, `Name`),
-  CONSTRAINT `fk_Gate_Terminal1` FOREIGN KEY (`Terminal_Id`) REFERENCES `airline_db`.`Terminal` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_Gate_Terminal1` FOREIGN KEY (`Terminal_Id`) REFERENCES `airline_db`.`Terminal` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
 CREATE INDEX `fk_Gate_Terminal1_idx` ON `airline_db`.`Gate` (`Terminal_Id` ASC) VISIBLE;
@@ -235,7 +238,7 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`Refund` (
   `Id` INT NOT NULL,
   `Payment_Id` INT NOT NULL,
   PRIMARY KEY (`Id`),
-  CONSTRAINT `fk_Refund_Payment1` FOREIGN KEY (`Payment_Id`) REFERENCES `airline_db`.`Payment` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_Refund_Payment1` FOREIGN KEY (`Payment_Id`) REFERENCES `airline_db`.`Payment` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `idRefund_UNIQUE` ON `airline_db`.`Refund` (`Id` ASC) VISIBLE;
@@ -248,12 +251,14 @@ CREATE INDEX `fk_Refund_Payment1_idx` ON `airline_db`.`Refund` (`Payment_Id` ASC
 DROP TABLE IF EXISTS `airline_db`.`Seat`;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`Seat` (
-  `Id` INT NOT NULL,
+  `Id` INT NOT NULL AUTO_INCREMENT,
   `Aircraft_Id` INT NOT NULL,
   `Class_Id` INT NOT NULL,
+  `Name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`Id`),
-  CONSTRAINT `fk_AircraftSeat_Aircraft1` FOREIGN KEY (`Aircraft_Id`) REFERENCES `airline_db`.`Aircraft` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Seat_Class1` FOREIGN KEY (`Class_Id`) REFERENCES `airline_db`.`Class` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  UNIQUE KEY `Aircraft1_Name1_idx` (`Aircraft_Id`, `Name`),
+  CONSTRAINT `fk_AircraftSeat_Aircraft1` FOREIGN KEY (`Aircraft_Id`) REFERENCES `airline_db`.`Aircraft` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Seat_Class1` FOREIGN KEY (`Class_Id`) REFERENCES `airline_db`.`Class` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
 CREATE INDEX `fk_AircraftSeat_Aircraft1_idx` ON `airline_db`.`Seat` (`Aircraft_Id` ASC) VISIBLE;
@@ -268,11 +273,11 @@ CREATE UNIQUE INDEX `Id_UNIQUE` ON `airline_db`.`Seat` (`Id` ASC) VISIBLE;
 DROP TABLE IF EXISTS `airline_db`.`Terminal`;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`Terminal` (
-  `Id` INT NOT NULL,
+  `Id` INT NOT NULL AUTO_INCREMENT,
   `Airport_Id` INT NOT NULL,
   `Name` VARCHAR(45) NULL,
   PRIMARY KEY (`Id`),
-  CONSTRAINT `fk_Terminal_Airline1` FOREIGN KEY (`Airport_Id`) REFERENCES `airline_db`.`Airport` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_Terminal_Airline1` FOREIGN KEY (`Airport_Id`) REFERENCES `airline_db`.`Airport` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `TerminalId_UNIQUE` ON `airline_db`.`Terminal` (`Id` ASC) VISIBLE;
@@ -289,8 +294,8 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`TicektAssignment` (
   `Ticket_Id` INT NOT NULL,
   `Passenger_Id` INT NOT NULL,
   PRIMARY KEY (`Ticket_Id`, `Id`),
-  CONSTRAINT `fk_TicektAssignment_Ticket1` FOREIGN KEY (`Ticket_Id`) REFERENCES `airline_db`.`Ticket` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_TicektAssignment_Passenger1` FOREIGN KEY (`Passenger_Id`) REFERENCES `airline_db`.`Passenger` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_TicektAssignment_Ticket1` FOREIGN KEY (`Ticket_Id`) REFERENCES `airline_db`.`Ticket` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_TicektAssignment_Passenger1` FOREIGN KEY (`Passenger_Id`) REFERENCES `airline_db`.`Passenger` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
 CREATE INDEX `fk_TicektAssignment_Ticket1_idx` ON `airline_db`.`TicektAssignment` (`Ticket_Id` ASC) VISIBLE;
@@ -308,8 +313,8 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`Ticket` (
   `Seat_Id` INT NOT NULL,
   `Price` INT NULL,
   PRIMARY KEY (`Id`),
-  CONSTRAINT `fk_Ticket_Flight1` FOREIGN KEY (`Flight_Id`) REFERENCES `airline_db`.`Flight` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Ticket_Seat1` FOREIGN KEY (`Seat_Id`) REFERENCES `airline_db`.`Seat` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_Ticket_Flight1` FOREIGN KEY (`Flight_Id`) REFERENCES `airline_db`.`Flight` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Ticket_Seat1` FOREIGN KEY (`Seat_Id`) REFERENCES `airline_db`.`Seat` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `idTicket_UNIQUE` ON `airline_db`.`Ticket` (`Id` ASC) VISIBLE;
@@ -327,8 +332,8 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`Ticket_Payment` (
   `Ticket_Id` INT NOT NULL,
   `Payment_Id` INT NOT NULL,
   PRIMARY KEY (`Ticket_Id`, `Payment_Id`),
-  CONSTRAINT `fk_Ticket_has_Payment_Ticket1` FOREIGN KEY (`Ticket_Id`) REFERENCES `airline_db`.`Ticket` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Ticket_has_Payment_Payment1` FOREIGN KEY (`Payment_Id`) REFERENCES `airline_db`.`Payment` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_Ticket_has_Payment_Ticket1` FOREIGN KEY (`Ticket_Id`) REFERENCES `airline_db`.`Ticket` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Ticket_has_Payment_Payment1` FOREIGN KEY (`Payment_Id`) REFERENCES `airline_db`.`Payment` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
 CREATE INDEX `fk_Ticket_has_Payment_Payment1_idx` ON `airline_db`.`Ticket_Payment` (`Payment_Id` ASC) VISIBLE;
@@ -345,8 +350,8 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`Trip` (
   `Confirmation_Name` INT NOT NULL,
   `Id` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`Flight_Id`, `Confirmation_Name`, `Id`),
-  CONSTRAINT `fk_Flight_has_Confirmation_Flight1` FOREIGN KEY (`Flight_Id`) REFERENCES `airline_db`.`Flight` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Flight_has_Confirmation_Confirmation1` FOREIGN KEY (`Confirmation_Name`) REFERENCES `airline_db`.`Confirmation` (`Confirmation_Name`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_Flight_has_Confirmation_Flight1` FOREIGN KEY (`Flight_Id`) REFERENCES `airline_db`.`Flight` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Flight_has_Confirmation_Confirmation1` FOREIGN KEY (`Confirmation_Name`) REFERENCES `airline_db`.`Confirmation` (`Confirmation_Name`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
 CREATE INDEX `fk_Flight_has_Confirmation_Confirmation1_idx` ON `airline_db`.`Trip` (`Confirmation_Name` ASC) VISIBLE;
@@ -359,24 +364,25 @@ CREATE INDEX `fk_Flight_has_Confirmation_Flight1_idx` ON `airline_db`.`Trip` (`F
 DROP TABLE IF EXISTS `airline_db`.`User`;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`User` (
-  `id` INT NOT NULL,
+  `Id` INT NOT NULL,
   `FirstName` VARCHAR(45) NULL,
   `Airline_Id` INT NOT NULL,
   `LastName` VARCHAR(45) NULL,
   `Password` VARCHAR(45) NULL,
   `Email` VARCHAR(45) NULL,
-  PRIMARY KEY (`id`),
-  CONSTRAINT `fk_User_Airline1` FOREIGN KEY (`Airline_Id`) REFERENCES `airline_db`.`Airline` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  PRIMARY KEY (`Id`),
+  CONSTRAINT `fk_User_Airline1` FOREIGN KEY (`Airline_Id`) REFERENCES `airline_db`.`Airline` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `id_UNIQUE` ON `airline_db`.`User` (`id` ASC) VISIBLE;
+CREATE UNIQUE INDEX `id_UNIQUE` ON `airline_db`.`User` (`Id` ASC) VISIBLE;
 
 CREATE INDEX `fk_User_Airline1_idx` ON `airline_db`.`User` (`Airline_Id` ASC) VISIBLE;
 
 -- -----------------------------------------------------
 -- STORED PROCEDURE `airline_db`.create_airline
 -- -----------------------------------------------------
-DELIMITER $ $ CREATE PROCEDURE `create_airline`(
+DELIMITER $$ 
+CREATE PROCEDURE `create_airline`(
   name varchar(45),
   city varchar(45),
   state varchar(45)
@@ -385,13 +391,14 @@ INSERT INTO
   `airline_db`.`Airline` (`Name`, `City`, `State`)
 VALUES
   (name, city, state);
-
-END $ $ DELIMITER;
+END 
+$$ DELIMITER;
 
 -- -----------------------------------------------------
 -- STORED PROCEDURE `airline_db`.create_airline
 -- -----------------------------------------------------
-DELIMITER $ $ CREATE PROCEDURE `find_available_tickets`(in flight_id int) BEGIN
+DELIMITER $$ 
+CREATE PROCEDURE `find_available_tickets`(in flight_id int) BEGIN
 SELECT
   *
 from
@@ -399,23 +406,26 @@ from
   left join Confirmation on Ticket.Id = Confirmation.Ticket_id
 WHERE
   Confirmation.Status != "Active";
+END 
+$$ DELIMITER;
 
-END $ $ DELIMITER;
 
 -- -----------------------------------------------------
 -- STORED PROCEDURE `airline_db`.create_class
 -- -----------------------------------------------------
-DELIMITER $ $ CREATE PROCEDURE `create_class` (in name varchar(45), in tier int) BEGIN
+DELIMITER $$ 
+CREATE PROCEDURE `create_class` (in name varchar(45), in tier int) BEGIN
 INSERT INTO
   `airline_db`.`Class` (`Name`, `Tier`)
 VALUES
   (name, tier);
-
-END $ $ DELIMITER;
+END
+$$ DELIMITER;
 
 -- -----------------------------------------------------
 -- RESTORE WORKBENCH SETTINGS
 -- -----------------------------------------------------
+DELIMITER $$ 
 SET
   SQL_MODE = @OLD_SQL_MODE;
 
