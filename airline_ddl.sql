@@ -81,6 +81,7 @@ DROP TABLE IF EXISTS `airline_db`.`Airport`;
 CREATE TABLE IF NOT EXISTS `airline_db`.`Airport` (
   `Id` INT NOT NULL AUTO_INCREMENT,
   `City` VARCHAR(45) NULL,
+  `Name` VARCHAR(200) NULL,
   `State` VARCHAR(45) NULL,
   `Abbreviation` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`Id`)
@@ -348,7 +349,7 @@ DROP TABLE IF EXISTS `airline_db`.`Trip`;
 CREATE TABLE IF NOT EXISTS `airline_db`.`Trip` (
   `Flight_Id` INT NOT NULL,
   `Confirmation_Name` INT NOT NULL,
-  `Id` VARCHAR(45) NOT NULL,
+  `Id` INT NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`Flight_Id`, `Confirmation_Name`, `Id`),
   CONSTRAINT `fk_Flight_has_Confirmation_Flight1` FOREIGN KEY (`Flight_Id`) REFERENCES `airline_db`.`Flight` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fk_Flight_has_Confirmation_Confirmation1` FOREIGN KEY (`Confirmation_Name`) REFERENCES `airline_db`.`Confirmation` (`Confirmation_Name`) ON DELETE CASCADE ON UPDATE NO ACTION

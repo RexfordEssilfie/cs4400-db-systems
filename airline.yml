@@ -5,6 +5,12 @@ Airport:
     City: NYC
     Abbreviation: JFK
 
+  Bose_Airport:
+    Name: Bose International Airport
+    State: IA
+    City: Iowa City
+    Abbreviation: BIA
+
   ATL_Airport:
     Name: Hartsfield-Jackson Atlanta International Airport
     City: ATL
@@ -84,7 +90,7 @@ Terminal:
       pk: Id
       fk: airport_id
 
-  # Hartsfield Jackson Airport
+  # Hartsfield-Jackson International Airport
   ATL_South_Terminal:
     $Airport: ATL_Airport
     Name: South
@@ -152,7 +158,7 @@ Flight:
         alias: $Gate_Arrival
 
 
-  flight_dl256:
+  Flight_DL256:
     $Airline: Delta_Airline
     Name: DL256    
     $Gate_Departure: ATL_Gate_A1
@@ -160,7 +166,7 @@ Flight:
     DepartureDate: '2022-09-12 12:30:00' 
     ArrivalDate: '2022-09-12 3:20:00' 
 
-  flight_aa139:
+  Flight_AA139:
     $Airline: American_Airline
     Name: AA139
     $Gate_Departure: JFK_Gate_C1
