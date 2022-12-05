@@ -33,17 +33,17 @@ def get_airlines(cursor):
 
 ######## AirCraft #######
 
-def create_aircrafts(airline, cursor):  #would it be (airline, cursor)? like you are doing for class?
+def create_aircrafts( cursor):  #would it be (airline, cursor)? like you are doing for class?
 
     cursor.execute("DELETE FROM Aircraft")
 
-    create_aircrafts_procedure = "CALL airline_db.Aircraft(%s,%s,%d);"
+    create_aircrafts_procedure = "CALL airline_db.create_aircrafts(%s,%s);"
     #airline_id, name, model, capacity
     aircrafts_data = [
-        ("UA", "UA11", 100),
-        ( "AA", "Alaska12", 120),
-        ( "SW", "Ch13", 130),
-        ( "Frontier", "NY14", 180)
+        (9, "UA11"),
+        ( 10, "Alaska12"),
+        ( 11, "Ch13"),
+        ( 12, "NY14")
     ]
 
     for data in aircrafts_data:
@@ -80,8 +80,9 @@ def main():
         user='root', password='root3069', db='airline_db')
 
     cursor = connection.cursor()
-    print('hi')
-    create_airlines(cursor)
+   
+    #create_airlines(cursor)
+    create_aircrafts(cursor)
 
     
     #create_classes_for_airline(cursor)

@@ -396,7 +396,22 @@ END
 $$ DELIMITER;
 
 -- -----------------------------------------------------
--- STORED PROCEDURE `airline_db`.create_airline
+-- STORED PROCEDURE `airline_db`.create_aircrafts
+-- -----------------------------------------------------
+DELIMITER $$ 
+CREATE PROCEDURE `create_aircrafts`(
+  airline_Id int,
+  name varchar(45)
+
+) BEGIN
+INSERT INTO
+  `airline_db`.`Aircraft` (`Airline_Id`, `Name`)
+VALUES
+  (airline_Id, name);
+END 
+$$ DELIMITER;
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.find_available_tickets
 -- -----------------------------------------------------
 DELIMITER $$ 
 CREATE PROCEDURE `find_available_tickets`(in flight_id int) BEGIN
