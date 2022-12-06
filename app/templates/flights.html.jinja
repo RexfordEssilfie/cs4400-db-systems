@@ -1,0 +1,56 @@
+{% extends "_base.html.jinja" %}
+{% block title %}Flights{% endblock %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+
+{% block content %}
+
+<h1 class="important">Flight Results</h1>
+
+<div>
+  <h4 class="inline">From:</h4>
+  <h4 class="inline">{{ (result|first)['departureairport_abbreviation'] }} ({{
+    (result|first)['departureairport_name']}})</h4>
+</div>
+
+<div>
+  <h4 class="inline">To:</h4>
+  <h4 class="inline">{{ (result|first)['arrivalairport_abbreviation'] }} ({{
+    (result|first)['arrivalairport_name']}})</h4>
+</div>
+
+<table class="table">
+  <thead>
+    <th>Airline Name</th>
+    <th>Departure Time</th>
+    <th>Arrival Time</th>
+    <th></th>
+  </thead>
+
+  <tbody>
+    {% for flight in result %}
+    <tr>
+      <td>{{ flight['airline_name'] }}</td>
+      <td>{{ flight['departuredate']|format_date }}</td>
+      <td>{{ flight['arrivaldate']|format_date }}</td>
+      <td><a href="{{url_for('flight_tickets', flight_id=flight['id'])}}">Tickets</a></td>
+    </tr>
+
+    {% endfor %}
+  </tbody>
+</table>
+
+
+
+{% if not result %}
+<p style="text-align: center; width: 100%; color: rgba(0,0,0,0.8); font-size: 1.1em">No Results. Please try a different
+  route.</p>
+{% endif %}
+
+<a href="/">Back</a>
+
+
+{% endblock %}

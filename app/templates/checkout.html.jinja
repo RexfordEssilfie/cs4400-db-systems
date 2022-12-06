@@ -1,0 +1,139 @@
+{% extends "_base.html.jinja" %}
+{% block title %}Home{% endblock %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+
+{% block content %}
+
+
+<h1>Checkout</h1>
+
+<h4>Flight: #{{ result['flight']['name'] or 'None' }} </h4>
+
+<div>
+  <label>Operated by:</label>
+  <span>{{ result['flight']['airline_name'] or 'None' }} </span>
+</div>
+
+
+<div class="info-grid">
+  <div>
+    <label>From: </label>
+    <span>{{ result['flight']['departureairport_abbreviation'] }} ({{
+      result['flight']['departureairport_name']}})</span>
+  </div>
+
+
+  <div>
+    <label>To: </label>
+    <span>{{ result['flight']['arrivalairport_abbreviation'] }} ({{
+      result['flight']['arrivalairport_name']}})</span>
+  </div>
+
+  <div>
+    <label>Departure Time: </label>
+    <span>{{ result['flight']['departuredate']|format_date }}</span>
+  </div>
+
+
+  <div>
+    <label>Arrival Time: </label>
+    <span>{{ result['flight']['arrivaldate']|format_date }}</span>
+  </div>
+
+</div>
+
+<div>
+  <h4>Seat: #{{ result['ticket']['seat_name'] or 'None' }} </h4>
+
+  <h4>Total: ${{ result['ticket']['price'] or 'None' }} </h4>
+</div>
+
+<form id="checkout_form" action="{{ url_for('purchase_ticket', ticket_id=result['ticket']['id'])}}" method="post">
+
+  <section>
+    <h3>Billing Details</h3>
+
+    <div class="field">
+      <label for="billingdetail_firstname">First Name</label>
+      <input type="text" name="billingdetail_firstname" />
+    </div>
+
+    <div class="field">
+      <label for="billingdetail_lastname">Last Name</label>
+      <input type="text" name="billingdetail_lastname" />
+    </div>
+
+    <div class="field">
+      <label for="billingdetail_cardno">Card Number</label>
+      <input type="text" name="billingdetail_cardno" />
+    </div>
+
+    <div class="field">
+      <label for="billingdetail_address1">Address 1</label>
+      <input type="text" name="billingdetail_address1" />
+    </div>
+
+    <div class="field">
+      <label for="billingdetail_city">City</label>
+      <input type="text" name="billingdetail_city" />
+    </div>
+
+    <div class="field">
+      <label for="billingdetail_state">State</label>
+      <input type="text" name="billingdetail_state" />
+    </div>
+
+    <div class="field">
+      <label for="passenger_country">Country</label>
+      <input type="text" name="passenger_country" />
+    </div>
+
+    <div class="field">
+      <label for="billingdetail_cvv">CVV</label>
+      <input type="text" name="billingdetail_cvv" />
+    </div>
+  </section>
+
+
+  <section>
+
+    <h3>Passenger Details</h3>
+
+    <div class="field">
+      <label for="passenger_firstname">First Name</label>
+      <input type="text" name="passenger_firstname" />
+    </div>
+
+    <div class="field">
+      <label for="passenger_firstname">Last Name</label>
+      <input type="text" name="passenger_lastname" />
+    </div>
+
+
+    <div class="field">
+      <label for="passenger_passportno">Passport No</label>
+      <input type="text" name="passenger_passport_no" />
+    </div>
+
+
+    <div class="field">
+      <label for="passenger_country">Country</label>
+      <input type="text" name="passenger_country" />
+    </div>
+
+  </section>
+
+
+  <input type="submit" value="Purchase ${{ result['ticket']['price']}}" />
+
+
+</form>
+
+<!-- Passenger details, payment info -->
+
+
+{% endblock %}

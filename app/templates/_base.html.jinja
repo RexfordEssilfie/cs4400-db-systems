@@ -1,0 +1,49 @@
+{%- extends "bootstrap/base.html" %}
+
+
+{% block title %}
+Sample App for Flask-Bootstrap
+{% endblock %}
+
+{% import "bootstrap/fixes.html" as fixes %}
+
+{% block head %}
+{{ super() }}
+{{ fixes.ie8() }}
+{%- endblock %}
+
+
+{% block styles -%}
+{{ super() }} {# do not forget to call super or Bootstrap's own stylesheets will
+disappear! #}
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/main.css')}}" />
+{% endblock %}
+
+
+
+{% block body %}
+{% block navbar %}
+<nav class="navbar navbar-light bg-light">
+  <a class="navbar-brand" href="/">Team4 Airlines</a>
+  <ul>
+    <li>
+      <a href="#">Book</a>
+    </li>
+  </ul>
+</nav>
+{% endblock %}
+
+<div id="content">
+  {% block content %}
+  {{super()}}
+  {% endblock %}
+</div>
+
+
+<div id="footer">
+  {% block footer %}
+  &copy; Copyright 2022 by <a href="http://localhost:5000">Team4</a>.
+  {% endblock %}
+</div>
+
+{% endblock %}

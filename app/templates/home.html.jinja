@@ -1,0 +1,24 @@
+{% extends "_base.html.jinja" %}
+{% block title %}Home{% endblock %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+
+{% block content %}
+
+<h1 class="important">Welcome to Team 4 Airlines</h1>
+
+<h3>Book Trip</h3>
+<form action="/flights" method="get">
+  <label for="from">From:</label>
+  <input required name="from" type="text" />
+
+  <label for="to">To:</label>
+  <input required name="to" type="text" />
+
+  <input type="submit" value='Find Flights' />
+</form>
+
+{% endblock %}

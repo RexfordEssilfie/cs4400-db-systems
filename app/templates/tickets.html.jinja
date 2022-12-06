@@ -1,0 +1,76 @@
+{% extends "_base.html.jinja" %}
+{% block title %}Flights{% endblock %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+
+{% block content %}
+
+<h1 class="important">Tickets</h1>
+<h4>Flight: #{{ result['flight']['name'] or 'None' }} </h4>
+
+<div>
+  <label>Operated by:</label>
+  <span>{{ result['flight']['airline_name'] or 'None' }} </span>
+</div>
+
+
+<div class="info-grid">
+  <div>
+    <label>From: </label>
+    <span>{{ result['flight']['departureairport_abbreviation'] }} ({{
+      result['flight']['departureairport_name']}})</span>
+  </div>
+
+
+  <div>
+    <label>To: </label>
+    <span>{{ result['flight']['arrivalairport_abbreviation'] }} ({{
+      result['flight']['arrivalairport_name']}})</span>
+  </div>
+
+  <div>
+    <label>Departure Time: </label>
+    <span>{{ result['flight']['departuredate']|format_date }}</span>
+  </div>
+
+
+  <div>
+    <label>Arrival Time: </label>
+    <span>{{ result['flight']['arrivaldate']|format_date }}</span>
+  </div>
+
+</div>
+
+<table class="table">
+  <thead>
+    <th>Seat</th>
+    <th>Class</th>
+    <th>Price</th>
+    <th></th>
+  </thead>
+
+
+  <tbody>
+    {% for ticket in result['tickets'] %}
+    <tr>
+      <td>{{ ticket['seat_name'] }}</td>
+      <td>{{ ticket['class_name'] }}</td>
+      <td>${{ ticket['price'] }}</td>
+      <td>
+        <a href="{{ url_for('checkout', ticket_id=ticket['id']) }}">Buy</a>
+      </td>
+    </tr>
+
+    {% endfor %}
+
+  </tbody>
+
+
+
+</table>
+
+
+{% endblock %}
