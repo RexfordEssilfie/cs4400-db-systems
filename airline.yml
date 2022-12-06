@@ -207,22 +207,22 @@ Seat:
     $Class: DL_First_Class
     Name: A1
 
+  DL_Boeing447_Economy_Class_Seat_B1:
+    $Aircraft: DL_Boeing447
+    $Class: DL_Economy_Class
+    Name: B1
+
   DL_Boeing447_First_Class_Seat_A2:
     $Aircraft: DL_Boeing447
     $Class: DL_First_Class
     Name: A2
-
-  DL_Boeing447_First_Class_Seat_A3:
-    $Aircraft: DL_Boeing447
-    $Class: DL_First_Class
-    Name: A3
 
   AA_JetLiner536_Main_Cabin_Seat_A1:
     $Aircraft: AA_JetLiner536
     $Class: AA_Main_Cabin_Class
     Name: A1
 
-  AA_JetLiner536_Main_Cabin_Seat_A2:
+  AA_JetLiner536_Economy_Seat_B2:
     $Aircraft: AA_JetLiner536
     $Class: AA_Main_Cabin_Class
     Name: A2
@@ -231,3 +231,42 @@ Seat:
     $Aircraft: AA_JetLiner536
     $Class: AA_Main_Cabin_Class
     Name: A3
+
+Ticket:
+  $relations:
+    Seat:
+      pk: Id
+      fk: Seat_Id
+    Flight:
+      pk: Id
+      fk: Flight_Id
+
+  DL_Boeing447_First_Class_Seat_A1_Ticket:
+    $Flight: Flight_DL256
+    $Seat: DL_Boeing447_First_Class_Seat_A1
+    Price: 500
+
+  DL_Boeing447_Economy_Class_Seat_B1_Ticket:
+    $Flight: Flight_DL256
+    $Seat: DL_Boeing447_Economy_Class_Seat_B1
+    Price: 200
+
+  DL_Boeing447_First_Class_Seat_A2_Ticket:
+    $Flight: Flight_DL256
+    $Seat: DL_Boeing447_First_Class_Seat_A2
+    Price: 450
+
+  AA_JetLiner536_Main_Cabin_Seat_A1_Ticket:
+    $Flight: Flight_AA139
+    $Seat: AA_JetLiner536_Main_Cabin_Seat_A1
+    Price: 200
+
+  AA_JetLiner536_Economy_Seat_B2_Ticket:
+    $Flight: Flight_AA139
+    $Seat: AA_JetLiner536_Economy_Seat_B2
+    Price: 100
+
+  AA_JetLiner536_Main_Cabin_Seat_A3_Ticket:
+    $Flight: Flight_AA139
+    $Seat: AA_JetLiner536_Main_Cabin_Seat_A3
+    Price: 99
