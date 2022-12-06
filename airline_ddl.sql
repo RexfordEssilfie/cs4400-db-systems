@@ -309,7 +309,7 @@ CREATE INDEX `fk_TicektAssignment_Passenger1_idx` ON `airline_db`.`TicektAssignm
 DROP TABLE IF EXISTS `airline_db`.`Ticket`;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`Ticket` (
-  `Id` INT NOT NULL,
+  `Id` INT NOT NULL AUTO_INCREMENT,
   `Flight_Id` INT NOT NULL,
   `Seat_Id` INT NOT NULL,
   `Price` INT NULL,
@@ -475,6 +475,71 @@ VALUES
   (flightid, confirmation);
 END
 $$ DELIMITER ;
+
+
+
+-- -----------------------------------------------------
+-- VIEW `airline_db`.Flight_Populated
+-- -----------------------------------------------------
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `flight_populated` AS
+    SELECT 
+        `G1`.`Name` AS `DepartureGate_Name`,
+        `G2`.`Name` AS `ArrivalGate_Name`,
+        `C1`.`Name` AS `Aircraft_Name`,
+        `L1`.`Name` AS `Airline_Name`,
+        `T1`.`Name` AS `DepartureTerminal_Name`,
+        `T2`.`Name` AS `ArrivalTerminal_Name`,
+        `A1`.`Name` AS `DepartureAirport_Name`,
+        `A2`.`Name` AS `ArrivalAirport_Name`,
+        `A1`.`Abbreviation` AS `DepartureAirport_Abbreviation`,
+        `A2`.`Abbreviation` AS `ArrivalAirport_Abbreviation`,
+        `flight`.`Id` AS `Id`,
+        `flight`.`Aircraft_Id` AS `Aircraft_Id`,
+        `flight`.`Name` AS `Name`,
+        `flight`.`DepartureGate_Id` AS `DepartureGate_Id`,
+        `flight`.`ArrivalGate_Id` AS `ArrivalGate_Id`,
+        `flight`.`DepartureDate` AS `DepartureDate`,
+        `flight`.`ArrivalDate` AS `ArrivalDate`
+    FROM
+        ((((((((`flight`
+        LEFT JOIN `gate` `G1` ON ((`flight`.`DepartureGate_Id` = `G1`.`Id`)))
+        LEFT JOIN `gate` `G2` ON ((`flight`.`ArrivalGate_Id` = `G2`.`Id`)))
+        LEFT JOIN `aircraft` `C1` ON ((`flight`.`Aircraft_Id` = `C1`.`Id`)))
+        LEFT JOIN `terminal` `T1` ON ((`G1`.`Terminal_Id` = `T1`.`Id`)))
+        LEFT JOIN `terminal` `T2` ON ((`G2`.`Terminal_Id` = `T2`.`Id`)))
+        LEFT JOIN `airport` `A1` ON ((`T1`.`Airport_Id` = `A1`.`Id`)))
+        LEFT JOIN `airport` `A2` ON ((`T2`.`Airport_Id` = `A2`.`Id`)))
+        LEFT JOIN `airline` `L1` ON ((`C1`.`Airline_Id` = `L1`.`Id`)))
+
+
+-- -----------------------------------------------------
+-- VIEW `airline_db`.Ticket_Populated
+-- -----------------------------------------------------
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `ticket_populated` AS
+    SELECT 
+        `ticket`.`Id` AS `Id`,
+        `ticket`.`Flight_Id` AS `Flight_Id`,
+        `ticket`.`Seat_Id` AS `Seat_Id`,
+        `ticket`.`Price` AS `Price`,
+        `seat`.`Name` AS `Seat_Name`,
+        `class`.`Name` AS `Class_Name`,
+        `confirmation`.`Status` AS `Confirmation_Status`
+    FROM
+        (((`ticket`
+        LEFT JOIN `seat` ON ((`seat`.`Id` = `ticket`.`Seat_Id`)))
+        LEFT JOIN `class` ON ((`seat`.`Class_Id` = `class`.`Id`)))
+        LEFT JOIN `confirmation` ON ((`confirmation`.`Ticket_Id` = `ticket`.`Id`)))
+
+
+
 -- -----------------------------------------------------
 -- RESTORE WORKBENCH SETTINGS
 -- -----------------------------------------------------
