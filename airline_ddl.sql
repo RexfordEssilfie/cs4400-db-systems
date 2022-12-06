@@ -203,7 +203,7 @@ CREATE INDEX `fk_Gate_Terminal1_idx` ON `airline_db`.`Gate` (`Terminal_Id` ASC) 
 DROP TABLE IF EXISTS `airline_db`.`Passenger`;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`Passenger` (
-  `Id` INT NOT NULL,
+  `Id` INT NOT NULL AUTO_INCREMENT,
   `PassportNumber` VARCHAR(45) NULL DEFAULT NULL,
   `FirstName` VARCHAR(45) NULL,
   `LastName` VARCHAR(45) NULL,
@@ -222,7 +222,7 @@ CREATE UNIQUE INDEX `PassportNumber_UNIQUE` ON `airline_db`.`Passenger` (`Passpo
 DROP TABLE IF EXISTS `airline_db`.`Payment`;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`Payment` (
-  `Id` INT NOT NULL,
+  `Id` INT NOT NULL AUTO_INCREMENT,
   `Amount` INT NULL,
   `DateCreated` DATETIME NULL,
   PRIMARY KEY (`Id`)
@@ -236,7 +236,7 @@ CREATE UNIQUE INDEX `idPayment_UNIQUE` ON `airline_db`.`Payment` (`Id` ASC) VISI
 DROP TABLE IF EXISTS `airline_db`.`Refund`;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`Refund` (
-  `Id` INT NOT NULL,
+  `Id` INT NOT NULL AUTO_INCREMENT,
   `Payment_Id` INT NOT NULL,
   PRIMARY KEY (`Id`),
   CONSTRAINT `fk_Refund_Payment1` FOREIGN KEY (`Payment_Id`) REFERENCES `airline_db`.`Payment` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION
@@ -347,7 +347,7 @@ CREATE INDEX `fk_Ticket_has_Payment_Ticket1_idx` ON `airline_db`.`Ticket_Payment
 DROP TABLE IF EXISTS `airline_db`.`User`;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`User` (
-  `Id` INT NOT NULL,
+  `Id` INT NOT NULL AUTO_INCREMENT,
   `FirstName` VARCHAR(45) NULL,
   `Airline_Id` INT NOT NULL,
   `LastName` VARCHAR(45) NULL,

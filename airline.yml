@@ -270,3 +270,89 @@ Ticket:
     $Flight: Flight_AA139
     $Seat: AA_JetLiner536_Main_Cabin_Seat_A3
     Price: 99
+
+User:
+  $relations:
+    Airline:
+      pk: Id
+      fk: Airline_Id
+    
+  # American Airlines
+  Ruapnti:
+    $Airline: American_Airline
+    FirstName: Rupanti
+    LastName: Bose
+    Email: rb@uiowa
+    Password: 123
+
+  Rexford:
+    $Airline: Jetblue_Airline
+    FirstName: Rexford
+    LastName: Essilfie
+    Email: rex@uiowa
+    Password: 124
+
+  Cameron:
+    $Airline: Delta_Airline
+    FirstName: Cameron
+    LastName: Fischer
+    Email: cfx@uiowa
+    Password: 125
+         
+Passenger:
+  
+  Cameron:
+    PassportNumber: cf11
+    FirstName: Cameron
+    LastName: Fischer
+    CountryCode: 1
+    Email: cfx@uiowa
+
+  Rexford:
+    PassportNumber: re11
+    FirstName: Rexford
+    LastName: Essilfie
+    CountryCode: 2
+    Email: rex@uiowa
+
+  Ruapnti:
+    PassportNumber: rb11
+    FirstName: Rupanti
+    CountryCode: 3
+    LastName: Bose
+    Email: rb@uiowa
+   
+Payment:
+
+  1:
+    Amount: 110
+    DateCreated: 22-12-06
+  2:
+    Amount: 120
+    DateCreated: 22-12-06
+  3:
+    Amount: 130
+    DateCreated: 22-12-07
+  1:
+    Amount: 140
+    DateCreated: 22-12-07
+  4:
+    Amount: 150
+    DateCreated: 22-12-08
+
+Refund:
+  $relations:
+    Payment:
+      pk: Id
+      fk: Payment_Id
+  1:
+    $Payment: 1
+    
+  2:
+    $Payment: 2
+    
+    
+ 
+
+
+      
