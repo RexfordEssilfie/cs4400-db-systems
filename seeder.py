@@ -24,7 +24,8 @@ class Seeder:
         """
         Establishes a database connection.
         """
-        self.connection = mysql.connector.connect(user=user, database=db, password=password)  # connect to a database
+        self.connection = mysql.connector.connect(
+            user=user, database=db, password=password)  # connect to a database
 
         # create cursor with dictionary=True to get results as a dictionary
         self.cursor = self.connection.cursor(dictionary=True)
@@ -131,7 +132,8 @@ class Seeder:
         # populate all foreign key relations
         for field, value in record_fixture.items():
             relation_match = re.search(r'^\$(\w+)_?', field)
-            relation_table = relation_match.group(1).split('_')[0] if relation_match else None
+            relation_table = relation_match.group(1).split(
+                '_')[0] if relation_match else None
 
             if (not relation_table) or (relation_table not in self.fixture_table_names):
                 continue
@@ -151,7 +153,8 @@ class Seeder:
             table_relation_info = relations[relation_table]
 
             if isinstance(table_relation_info, list):
-                table_relation_info = next(r for r in table_relation_info if r['alias'] == field)
+                table_relation_info = next(
+                    r for r in table_relation_info if r['alias'] == field)
 
             pk_field = table_relation_info['pk'].lower()
             fk_field = table_relation_info['fk'].lower()
@@ -260,6 +263,12 @@ if __name__ == '__main__':
             Seeder.Query.SET: 'INSERT INTO Seat' +
                               '(Name, Aircraft_Id, Class_Id) VALUES' +
                               '(%(Name)s, %(Aircraft_Id)s, %(Class_Id)s);'
+        },
+        'Ticket': {
+            Seeder.Query.GET: 'SELECT * FROM Ticket WHERE Id=%(Id)s;',
+            Seeder.Query.SET: 'INSERT INTO Ticket' +
+                              '(Price, Flight_Id, Seat_Id) VALUES' +
+                              '(%(Price)s, %(Flight_Id)s, %(Seat_Id)s);'
         },
     })
 
