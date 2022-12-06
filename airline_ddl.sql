@@ -421,6 +421,60 @@ VALUES
 END
 $$ DELIMITER;
 
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.add_billing_detail
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE PROCEDURE `add_billing_detail`(in FourDigits varchar(45), in Token varchar(45))
+BEGIN
+INSERT INTO
+  `airline_db`.`billingdetail` (`CardNumberLastFourDigit`, `CardToken`)
+VALUES
+  (FourDigits, Token);
+END
+$$ DELIMITER;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.create_confirmations
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE PROCEDURE `create_confirmations`(in ConfirmationName int, in TicketId int, in passengerid int)
+BEGIN
+INSERT INTO `airline_db`.`confirmation`
+(`Confirmation_Name`,
+`Status`,
+`ConfirmationDate`,
+`Ticket_Id`,
+`Passenger_Id`)
+VALUES
+  (ConfirmationName, 'Active', 'curdate()', TicketId, passengerId);
+END
+$$ DELIMITER;
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.create_payments
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE PROCEDURE `create_payments`(in amount int, in DateCreated datetime)
+BEGIN
+INSERT INTO
+  `airline_db`.`payment` (`Amount`, `DateCreated`)
+VALUES
+  (amount, DateCreated);
+END
+$$ DELIMITER;
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.create_trips
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE PROCEDURE `create_trips`(in flightid int, in confirmation int)
+BEGIN
+INSERT INTO
+  `airline_db`.`trip` (`'Flight_Id`, `Confirmation_Name`)
+VALUES
+  (flightid, confirmation);
+END
+$$ DELIMITER ;
 -- -----------------------------------------------------
 -- RESTORE WORKBENCH SETTINGS
 -- -----------------------------------------------------
