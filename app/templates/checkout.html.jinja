@@ -94,7 +94,7 @@
 
     <div class="field">
       <label for="billingdetail_cvv">CVV</label>
-      <input type="text" name="billingdetail_cvv" />
+      <input type="password" name="billingdetail_cvv" />
     </div>
   </section>
 
@@ -128,7 +128,7 @@
   </section>
 
 
-  <input type="submit" value="Purchase ${{ result['ticket']['price']}}" />
+  <input style="margin-top:12px" type="submit" value="Purchase Ticket: ${{ result['ticket']['price']}}" />
 
 
 </form>

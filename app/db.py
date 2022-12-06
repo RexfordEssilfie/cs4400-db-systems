@@ -8,12 +8,10 @@ class DatabaseHelper:
         Establishes a database connection.
         """
         self.connection = mysql.connector.connect(
-            user=user, database=db, password=password)  # connect to a database
+            user=user, database=db, password=password)
 
-        # create cursor with dictionary=True to get results as a dictionary
         self.cursor = self.connection.cursor(dictionary=True)
 
-        # for convenience, autocommit all operations
         self.connection.autocommit = True
 
     def execute(self, query, data=None, verbose=True):

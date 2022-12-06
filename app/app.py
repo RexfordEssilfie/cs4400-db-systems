@@ -1,10 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_bootstrap import Bootstrap
 
-import mysql.connector
-
 from app.db import DatabaseHelper
-import datetime
 
 
 app = Flask(__name__)
@@ -35,9 +32,9 @@ def flights():
     flight_from = request.args.get('from')
     flight_to = request.args.get('to')
 
-    flights = db_helper.get_flights_from_to(flight_from, flight_to) or []
+    flight_results = db_helper.get_flights_from_to(flight_from, flight_to) or []
 
-    return render_template('flights.html.jinja', result=flights)
+    return render_template('flights.html.jinja', result=flight_results)
 
 
 @app.get("/flights/<int:flight_id>/tickets")
