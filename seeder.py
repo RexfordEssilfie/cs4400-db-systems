@@ -143,6 +143,11 @@ class Seeder:
                     f'Error: Could not find associated record: {value}, for table: {table_name}. Aborting insert.')
                 return
 
+            if relation_table not in relations.keys():
+                print(
+                    f'Error: Missing $relation in fixture for table: {table_name}. Aborting insert.')
+                return
+
             table_relation_info = relations[relation_table]
 
             if isinstance(table_relation_info, list):
@@ -239,9 +244,9 @@ if __name__ == '__main__':
         'Flight': {
             Seeder.Query.GET: 'SELECT * FROM Flight WHERE Id=%(Id)s;',
             Seeder.Query.SET: 'INSERT INTO Flight' +
-                              '(Name, Airline_Id, DepartureGate_Id, ArrivalGate_Id, ArrivalDate, DepartureDate) ' +
+                              '(Name, Aircraft_Id, DepartureGate_Id, ArrivalGate_Id, ArrivalDate, DepartureDate) ' +
                               'VALUES' +
-                              '(%(Name)s, %(Airline_Id)s, %(DepartureGate_Id)s, %(ArrivalGate_Id)s, ' +
+                              '(%(Name)s, %(Aircraft_Id)s, %(DepartureGate_Id)s, %(ArrivalGate_Id)s, ' +
                               '%(ArrivalDate)s, %(DepartureDate)s);'
         },
         'Aircraft': {
