@@ -288,9 +288,9 @@ if __name__ == '__main__':
                               '(Amount, DateCreated)'+ 'VALUES' +
                               '(%(Amount)s, %(DateCreated)s);'
         },
-        'TicketAssignment': {
-            Seeder.Query.GET: 'SELECT * FROM TicketAssignment WHERE Id=%(Id)s;',
-            Seeder.Query.SET: 'INSERT INTO TicketAssignment' +
+        'Ticket_Payment': {
+            Seeder.Query.GET: 'SELECT * FROM Ticket_Paymentt WHERE Id=%(Id)s;',
+            Seeder.Query.SET: 'INSERT INTO Ticket_Paymentt' +
                               '(Ticket_Id, Payment_Id)'+ 'VALUES' +
                               '(%(Ticket_Id)s, %(Payment_Id)s);'
         },

@@ -354,7 +354,7 @@ Refund:
     
  
 
-TicketAssignment:
+Ticket_Payment:
   $relations:
     Ticket:
       pk: Id 
@@ -363,11 +363,11 @@ TicketAssignment:
       pk: Id
       fk: Payment_Id  
     
-  ticketAssignment_1:
+  Ticket_Payment_1:
     $Ticket: DL_Boeing447_First_Class_Seat_A1_Ticket
     $Payment: Payment_1
 
-  ticketAssignment_2:
+  Ticket_Payment_2:
     $Ticket: DL_Boeing447_Economy_Class_Seat_B1_Ticket
     $Payment: Payment_2
 
