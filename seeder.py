@@ -255,20 +255,50 @@ if __name__ == '__main__':
         'Aircraft': {
             Seeder.Query.GET: 'SELECT * FROM Aircraft WHERE Id=%(Id)s;',
             Seeder.Query.SET: 'INSERT INTO Aircraft' +
-                              '(Name, Airline_Id, Model, Capacity) VALUES' +
+                              '(Name, Airline_Id, Model, Capacity)'+ 'VALUES' +
                               '(%(Name)s, %(Airline_Id)s, %(Model)s, %(Capacity)s);'
         },
         'Seat': {
             Seeder.Query.GET: 'SELECT * FROM Seat WHERE Id=%(Id)s;',
             Seeder.Query.SET: 'INSERT INTO Seat' +
-                              '(Name, Aircraft_Id, Class_Id) VALUES' +
+                              '(Name, Aircraft_Id, Class_Id)'+ 'VALUES' +
                               '(%(Name)s, %(Aircraft_Id)s, %(Class_Id)s);'
         },
         'Ticket': {
             Seeder.Query.GET: 'SELECT * FROM Ticket WHERE Id=%(Id)s;',
             Seeder.Query.SET: 'INSERT INTO Ticket' +
-                              '(Price, Flight_Id, Seat_Id) VALUES' +
+                              '(Price, Flight_Id, Seat_Id)'+ 'VALUES' +
                               '(%(Price)s, %(Flight_Id)s, %(Seat_Id)s);'
+        },
+        'User':{
+            Seeder.Query.GET: 'SELECT * FROM User WHERE Id=%(Id)s;',
+            Seeder.Query.SET: 'INSERT INTO User' +
+                              '(Airline_Id, FirstName, LastName,Email,Password)'+ 'VALUES' +
+                              '(%(Airline_Id)s, %(FirstName)s, %(LastName)s,%(Email)s,%(Password)s);'
+            },
+        'Passenger':{
+            Seeder.Query.GET: 'SELECT * FROM Passenger WHERE Id=%(Id)s;',
+            Seeder.Query.SET: 'INSERT INTO Passenger' +
+                              '(PassportNumber, FirstName, LastName,CountryCode,Email)'+ 'VALUES' +
+                              '(%(PassportNumber)s, %(FirstName)s, %(LastName)s,%(CountryCode)s,%(Email)s);'
+            },
+        'Payment': {
+            Seeder.Query.GET: 'SELECT * FROM Payment WHERE Id=%(Id)s;',
+            Seeder.Query.SET: 'INSERT INTO Payment' +
+                              '(Amount, DateCreated)'+ 'VALUES' +
+                              '(%(Amount)s, %(DateCreated)s);'
+        },
+        'TicketAssignment': {
+            Seeder.Query.GET: 'SELECT * FROM TicketAssignment WHERE Id=%(Id)s;',
+            Seeder.Query.SET: 'INSERT INTO TicketAssignment' +
+                              '(Ticket_Id, Payment_Id)'+ 'VALUES' +
+                              '(%(Ticket_Id)s, %(Payment_Id)s);'
+        },
+        'Refund': {
+            Seeder.Query.GET: 'SELECT * FROM Refund WHERE Id=%(Id)s;',
+            Seeder.Query.SET: 'INSERT INTO Refund' +
+                              '(Payment_Id)'+ 'VALUES' +
+                              '(%(Payment_Id)s);'
         },
     })
 
