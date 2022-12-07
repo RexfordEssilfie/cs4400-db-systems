@@ -291,7 +291,7 @@ CREATE INDEX `fk_Terminal_Airline1_idx` ON `airline_db`.`Terminal` (`Airport_Id`
 DROP TABLE IF EXISTS `airline_db`.`TicektAssignment`;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`TicektAssignment` (
-  `Id` INT NOT NULL AUTO_INCREMENT,
+  `Id` INT NOT NULL ,
   `Ticket_Id` INT NOT NULL,
   `Passenger_Id` INT NOT NULL,
   PRIMARY KEY (`Ticket_Id`, `Id`),
