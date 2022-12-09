@@ -206,7 +206,7 @@ class Seeder:
 if __name__ == '__main__':
     seeder = Seeder()
 
-    seeder.connect_db(user='root', password='mysqladmin', db='airline_db')
+    seeder.connect_db(user='root', password='root3069', db='airline_db')
 
     seeder.register_fixture('airline.yml')
 
@@ -289,8 +289,8 @@ if __name__ == '__main__':
                               '(%(Amount)s, %(DateCreated)s);'
         },
         'Ticket_Payment': {
-            Seeder.Query.GET: 'SELECT * FROM Ticket_Paymentt WHERE Id=%(Id)s;',
-            Seeder.Query.SET: 'INSERT INTO Ticket_Paymentt' +
+            Seeder.Query.GET: 'SELECT * FROM Ticket_Payment WHERE Id=%(Id)s;',
+            Seeder.Query.SET: 'INSERT INTO Ticket_Payment' +
                               '(Ticket_Id, Payment_Id)'+ 'VALUES' +
                               '(%(Ticket_Id)s, %(Payment_Id)s);'
         },
