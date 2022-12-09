@@ -477,6 +477,180 @@ END
 $$ DELIMITER ;
 
 -- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.create_flight
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_flight`(
+  aircraftid int,
+  flightName varchar(45),
+  departureid int,
+  arrivalid int,
+  departDate datetime,
+  arrivedate datetime
+)
+BEGIN
+INSERT INTO
+  `airline_db`.`flight` (`Aircraft_Id`, `Name`,`DepartureGate_Id`, `ArrivalGate_Id`,`DepartureDate`, `ArrivalDate`)
+VALUES
+  (aircraftid, flightName, departureid, arrivalid, departDate, arrivedate );
+END$$
+DELIMITER ;
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.create_gate
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_gate`(
+  terminalid int,
+  gateName varchar(45),
+  longitutde varchar(45),
+  latitude varchar(45)
+)
+BEGIN
+INSERT INTO
+  `airline_db`.`gate` (`Terminal_Id`, `Name`,`Longitude`, `Latitude`)
+VALUES
+  (terminalid, gateName, longitutde, latitude);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.create_passenger
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_passenger`(
+  passportname varchar(45),
+  Firstname varchar(45),
+  LastName varchar(45),
+  CountryCode varchar(45),
+  Email varchar(45)
+)
+BEGIN
+INSERT INTO
+  `airline_db`.`passenger` (`PassportNumber`, `FirstName`,`LastName`, `CountryCode`,`Email`)
+VALUES
+  (passportname, Firstname, LastName, CountryCode, Email);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.create_refund
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_refund`(
+  PaymentId int
+)
+BEGIN
+INSERT INTO
+  `airline_db`.`refund` (`Payment_Id`)
+VALUES
+  (PaymentId);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.create_seat
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_seat`(
+  AircraftId int,
+  ClassId int,
+  SeatName varchar(45)
+)
+BEGIN
+INSERT INTO
+  `airline_db`.`seat` (`Aircraft_Id`, `Class_Id`,`Name`)
+VALUES
+  (AircraftId, ClassId, SeatName);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.create_terminal
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_terminal`(
+  AirportID int,
+  AirportName varchar(45)
+)
+BEGIN
+INSERT INTO
+  `airline_db`.`terminal` (`Airport_Id`, `Name`)
+VALUES
+  (AirportID, AirportName);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.create_ticket
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_ticket`(
+  FlightId int,
+  SeatId int,
+  Price int
+)
+BEGIN
+INSERT INTO
+  `airline_db`.`ticket` (`Flight_Id`, `Seat_Id`,`Price`)
+VALUES
+  (FlightId, SeatId, Price);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.create_ticket_payment
+-- -----------------------------------------------------
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_ticket_payment`(
+  TicketId int,
+  PaymentId int
+)
+BEGIN
+INSERT INTO
+  `airline_db`.`ticket_payment` (`Ticket_Id`, `Payment_Id`)
+VALUES
+  (TicketId, PaymentId);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.create_ticketassignment
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_ticketassignment`(
+  ticketid int,
+  passengerid int
+)
+BEGIN
+INSERT INTO
+  `airline_db`.`ticketassignment` (`Ticket_Id`, `Passenger_Id`)
+VALUES
+  (ticketid, passengerid);
+END$$
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.create_user
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_user`(
+  FirstName varchar(45),
+  Airline_Id int,
+  LastName varchar(45),
+  userPassword varchar(45),
+  Email varchar(45)
+)
+BEGIN
+INSERT INTO
+  `airline_db`.`user` (`Firstname`, `Airline_Id`,`LastName`, `Password`,`Email`)
+VALUES
+  (FirstName, Airline_Id, LastName, userPassword, Email);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
 -- STORED PROCEDURE `airline_db`.fetch_flights_from_airport
 -- -----------------------------------------------------
 
@@ -503,13 +677,16 @@ DELIMITER ;
 -- -----------------------------------------------------
 -- STORED PROCEDURE `airline_db`.fetch_flights_To_airport
 -- -----------------------------------------------------
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `fetch_flights_To_airport`(airportCode varchar(45))
 BEGIN
 select * from Airline_db.Flight where DepartureGate_Id in 
 (select Id from airline_db.Gate where Terminal_Id in 
 (select Id from airline_db.Terminal where Airport_Id  in (
 select Id from airline_db.Airport where Abbreviation=airportCode)));
-END
+END$$
+
+DELIMITER ;
 
 -- -----------------------------------------------------
 -- STORED PROCEDURE `airline_db`.fetch_flights (from a specific airport to another)
