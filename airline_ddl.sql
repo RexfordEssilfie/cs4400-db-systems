@@ -498,7 +498,6 @@ select Id from airline_db.Airport where Abbreviation=airportCode)));
 END$$
 
 DELIMITER ;
-;
 
 
 -- -----------------------------------------------------
