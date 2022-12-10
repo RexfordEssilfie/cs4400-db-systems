@@ -54,7 +54,7 @@ class DatabaseHelper:
             "SELECT * FROM Flight_Populated WHERE Id=%s", [flight_id])
         return self.result()
 
-    def initiate_ticket_payment(self, ticket_id=None, passenger_id=None, card_lastfour=None, card_token=None, amount=None, processor_status=None):
+    def buy_single_ticket(self, ticket_id=None, passenger_id=None, card_lastfour=None, card_token=None, amount=None, processor_status=None):
         #TODO: insert billing detail, then payment with correct amount, for given ticket
         self.execute(
             "CALL PROCEDURE `airline_db`.`initiate_ticket_payment`(%s, %s, %s, %s)", [ticket_id, passenger_id, card_lastfour, card_token, amount, processor_status])
