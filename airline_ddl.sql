@@ -995,9 +995,6 @@ DELIMITER ;
 -- -----------------------------------------------------
 -- STORED PROCEDURE `airline_db`.buy_single_ticket
 -- -----------------------------------------------------
-USE `airline_db`;
-DROP procedure IF EXISTS `buy_single_ticket`;
-
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `buy_single_ticket`(
 	in ticket_id int,
@@ -1012,27 +1009,77 @@ sp: BEGIN
    DECLARE ticket_price varchar(40);
    DECLARE payment_id int;
 
-   SELECT Price INTO ticket_price FROM Ticket WHERE Ticket_Id=ticket_id;
+   START TRANSACTION;
 
    SELECT Status INTO ticket_status FROM Confirmation WHERE Ticket_Id=ticket_id AND (STATUS IS NULL OR STATUS NOT IN ("Active"));
 
+   SAVEPOINT point1;
+
    IF (ticket_status IS NULL) THEN
+    ROLLBACK TO point1;
 	LEAVE sp;
    END IF;
+
+   SAVEPOINT point2;
+
+   SELECT Price INTO ticket_price FROM Ticket WHERE Ticket_Id=ticket_id;
 
    IF (amount < ticket_price) THEN
+	ROLLBACK TO point2;
 	LEAVE sp;
    END IF;
-
 
    INSERT INTO Payment (Amount, BillingDetail_ID) VALUES (amount, billing_detail_id);
    SET payment_id = LAST_INSERT_ID();
 
-    INSERT INTO Ticket_Payment (Payment_Id, Ticket_Id) VALUES (payment_id, ticket_id);
+   INSERT INTO Ticket_Payment (Payment_Id, Ticket_Id) VALUES (payment_id, ticket_id);
 
    INSERT INTO Confirmation (Ticket_Id, Passenger_Id, Confirmation_Date, Status) VALUES (amount, passenger_id, curdate(), "Active");
+
+   COMMIT;
 END$$
 DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.update_flight_schedule
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_flight_schedule`(in flightId int, in departureDate datetime, arrivalDate datetime)
+BEGIN
+
+START TRANSACTION;
+
+IF departuredate <= arrivalDate THEN
+  UPDATE Flight SET DepartureDate=departureDate, ArrivalDate=arrivalDate WHERE Id=flightId;
+END IF;
+
+COMMIT;
+END$$
+DELIMITER ;
+
+
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.update_ticket_price
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_ticket_price`(in ticketId int, in price int)
+BEGIN
+
+DECLARE ticketStatus varchar(40);
+
+START TRANSACTION;
+
+SELECT Status INTO ticketStatus from Confirmation WHERE Ticket_Id = ticketId AND Status IN ("Active");
+
+IF (ticketStatus IS NOT NULL) THEN
+ UPDATE Ticket SET Price=price WHERE Id=ticketId;
+END IF;
+
+COMMIT;
+END$$
+DELIMITER ;
+
 
 -- -----------------------------------------------------
 -- VIEW `airline_db`.Flight_Populated
