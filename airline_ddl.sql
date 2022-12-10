@@ -746,6 +746,177 @@ END$$
 
 DELIMITER ;
 
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.select_Aircraft_id
+-- -----------------------------------------------------
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `select_Aircraft_Id`(airportCode int)
+BEGIN
+(select * from Airline_db.aircraft where Id=airportCode);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.select_airline_id
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `select_airline_Id`(airlineCode int)
+BEGIN
+(select * from Airline_db.airline where Id=airlineCode);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.select_airport_id
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `select_airport_Id`(airportid int)
+BEGIN
+(select * from Airline_db.airport where Id=airportid);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.select_billingdetail_id
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `select_billingdetail_Id`(billingdetailid int)
+BEGIN
+(select * from Airline_db.billingdetail where Id=billingdetailid);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.select_class_id
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `select_class_Id`(class int)
+BEGIN
+(select * from Airline_db.class where Id=class);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.select_confirmation_id
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `select_confirmation_Id`(confirmation int)
+BEGIN
+(select * from Airline_db.confirmation where Id=confirmation);
+END$$
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.select_flight_id
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `select_flight_Id`(flight int)
+BEGIN
+(select * from Airline_db.flight where Id=flight);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.select_gate_id
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `select_gate_Id`(gate int)
+BEGIN
+(select * from Airline_db.gate where Id=gate);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.select_passenger_id
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `select_passenger_Id`(passenger int)
+BEGIN
+(select * from Airline_db.passenger where Id=passenger);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.select_payment_id
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `select_payment_Id`(payment int)
+BEGIN
+(select * from Airline_db.payment where Id=payment);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.select_refund_id
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `select_refund_Id`(refund int)
+BEGIN
+(select * from Airline_db.refund where Id=refund);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.select_seat_id
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `select_seat_Id`(seat int)
+BEGIN
+(select * from Airline_db.seat where Id=seat);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.select_terminal_id
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `select_terminal_Id`(terminal int)
+BEGIN
+(select * from Airline_db.terminal where Id=terminal);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.select_ticket_id
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `select_ticket_Id`(ticket int)
+BEGIN
+(select * from Airline_db.ticket where Id=ticket);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.select_ticket_payment_id
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `select_ticket_payment_Id`(ticket_payment int)
+BEGIN
+(select * from Airline_db.ticket_payment where Id=ticket_payment);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.select_ticketassignment_id
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `select_ticketassignment_Id`(ticketassignment int)
+BEGIN
+(select * from Airline_db.ticketassignment where Id=ticketassignment);
+END$$
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.select_user_id
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `select_user_Id`(user int)
+BEGIN
+(select * from Airline_db.user where Id=user);
+END$$
+DELIMITER ;
 
 
 -- -----------------------------------------------------
