@@ -770,18 +770,18 @@ END$$
 
 DELIMITER ;
 -- -----------------------------------------------------
--- STORED PROCEDURE `airline_db`.user_sign_in
+-- STORED PROCEDURE `airline_db`.user_login_in
 -- -----------------------------------------------------
 USE `airline_db`;
-DROP procedure IF EXISTS `user_sign_in`;
+DROP procedure IF EXISTS `user_login_in`;
 
 USE `airline_db`;
-DROP procedure IF EXISTS `airline_db`.`user_sign_in`;
+DROP procedure IF EXISTS `airline_db`.`user_login_in`;
 ;
 
 DELIMITER $$
 USE `airline_db`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `user_sign_in`(email varchar(45), password varchar(45))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `user_login_in`(email varchar(45), password varchar(45))
 BEGIN
 select * from airline_db.User where ( airline_db.User.Email = email) and (airline_db.User.Password = password);
 END$$
