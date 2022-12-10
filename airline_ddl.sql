@@ -229,9 +229,11 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`Payment` (
   `BillingDetail_Id` INT NOT NULL,
   `Status` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`Id`),
-  CONSTRAINT `fk_BillingDetail_Id` FOREIGN KEY (`BillingDetail_Id`) REFERENCES `airline_db`.`BillingDetail` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
-  ADD INDEX `fk_BillingDetail_Id_idx` (`BillingDetail_Id` ASC) VISIBLE;
+  CONSTRAINT `fk_BillingDetail_Id` FOREIGN KEY (`BillingDetail_Id`) REFERENCES `airline_db`.`BillingDetail` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB;
+
+
+CREATE INDEX `fk_BillingDetail_Id_idx` ON  `airline_db`.`Payment` (`BillingDetail_Id` ASC) VISIBLE;
 
 CREATE UNIQUE INDEX `idPayment_UNIQUE` ON `airline_db`.`Payment` (`Id` ASC) VISIBLE;
 
