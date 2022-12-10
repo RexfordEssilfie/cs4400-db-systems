@@ -1,0 +1,18 @@
+{% extends "_base.html.jinja" %}
+{% block title %}Home{% endblock %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+
+{% block content %}
+
+<h1>Error</h1>
+<p>Something went wrong fulfilling your request!</p>
+<p>We found this: <span style="color: red;"> {{ result }} </span></p>
+
+<p>Please try again.</p>
+
+
+{% endblock %}
