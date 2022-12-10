@@ -377,28 +377,50 @@ CREATE PROCEDURE `create_airline`(
   name varchar(45),
   code varchar(4),
   city varchar(45),
-  state varchar(45)
+  state varchar(45),
+  out last_id int
 ) BEGIN
 INSERT INTO
   `airline_db`.`Airline` (`Name`, `Code`,`City`, `State`)
 VALUES
   (name, code,city, state);
+SET last_id = last_insert_id();
 END 
 $$ DELIMITER;
 
 -- -----------------------------------------------------
--- STORED PROCEDURE `airline_db`.create_aircrafts
+-- STORED PROCEDURE `airline_db`.create_airport
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE PROCEDURE `create_airport`(
+  abbreviation varchar(45),
+  city varchar(45),
+  name varchar(200),
+  state varchar(45),
+  out last_id int
+) BEGIN
+INSERT INTO
+  `airline_db`.`Airport` (`Abbreviation`, `City`, `Name`, `State`)
+VALUES
+  (abbreviation, city, name, state);
+SET last_id = last_insert_id();
+END
+$$ DELIMITER;
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.create_aircraft
 -- -----------------------------------------------------
 DELIMITER $$ 
-CREATE PROCEDURE `create_aircrafts`(
-  airline_Id int,
-  name varchar(45)
-
+CREATE PROCEDURE `create_aircraft`(
+  in airline_Id int,
+  in name varchar(45),
+  out last_id int
 ) BEGIN
 INSERT INTO
   `airline_db`.`Aircraft` (`Airline_Id`, `Name`)
 VALUES
   (airline_Id, name);
+SET last_id = last_insert_id();
 END 
 $$ DELIMITER;
 -- -----------------------------------------------------
@@ -421,11 +443,12 @@ $$ DELIMITER;
 -- STORED PROCEDURE `airline_db`.create_class
 -- -----------------------------------------------------
 DELIMITER $$ 
-CREATE PROCEDURE `create_class` (in name varchar(45), in tier int) BEGIN
+CREATE PROCEDURE `create_class` (in name varchar(45), in tier int, out last_id int) BEGIN
 INSERT INTO
   `airline_db`.`Class` (`Name`, `Tier`)
 VALUES
   (name, tier);
+SET last_id = last_insert_id();
 END
 $$ DELIMITER;
 
@@ -445,67 +468,53 @@ END
 $$ DELIMITER;
 
 -- -----------------------------------------------------
--- STORED PROCEDURE `airline_db`.create_confirmations
+-- STORED PROCEDURE `airline_db`.create_confirmation
 -- -----------------------------------------------------
 DELIMITER $$
-CREATE PROCEDURE `create_confirmations`(in ConfirmationName int, in TicketId int, in passengerid int, out last_id int)
+CREATE PROCEDURE `create_confirmation`(in TicketId int, in passengerId int, out last_id int)
 BEGIN
 INSERT INTO `airline_db`.`confirmation`
-(`Confirmation_Name`,
-`Status`,
+(`Status`,
 `ConfirmationDate`,
 `Ticket_Id`,
 `Passenger_Id`)
 VALUES
-  (ConfirmationName, 'Active', 'curdate()', TicketId, passengerId);
+  ('Active', curdate(), TicketId, passengerId);
   SET last_id = last_insert_id();
 END
 $$ DELIMITER;
 -- -----------------------------------------------------
--- STORED PROCEDURE `airline_db`.create_payments
+-- STORED PROCEDURE `airline_db`.create_payment
 -- -----------------------------------------------------
 DELIMITER $$
-CREATE PROCEDURE `create_payments`(in amount int, in DateCreated datetime,out last_id int)
+CREATE PROCEDURE `create_payment`(in amount int,out last_id int)
 BEGIN
 INSERT INTO
   `airline_db`.`payment` (`Amount`, `DateCreated`)
 VALUES
-  (amount, DateCreated);
+  (amount, curdate());
   SET last_id = last_insert_id();
 END
 $$ DELIMITER;
--- -----------------------------------------------------
--- STORED PROCEDURE `airline_db`.create_trips
--- -----------------------------------------------------
-DELIMITER $$
-CREATE PROCEDURE `create_trips`(in flightid int, in confirmation int, out last_id int)
-BEGIN
-INSERT INTO
-  `airline_db`.`trip` (`'Flight_Id`, `Confirmation_Name`)
-VALUES
-  (flightid, confirmation);
-  SET last_id = last_insert_id();
-END
-$$ DELIMITER ;
 
 -- -----------------------------------------------------
 -- STORED PROCEDURE `airline_db`.create_flight
 -- -----------------------------------------------------
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `create_flight`(
-  aircraftid int,
+  aircraftId int,
   flightName varchar(45),
-  departureid int,
-  arrivalid int,
-  departDate datetime,
-  arrivedate datetime,
+  departureId int,
+  arrivalGateId int,
+  departureGateId datetime,
+  arrivalDate datetime,
   out last_id int
 )
 BEGIN
 INSERT INTO
   `airline_db`.`flight` (`Aircraft_Id`, `Name`,`DepartureGate_Id`, `ArrivalGate_Id`,`DepartureDate`, `ArrivalDate`)
 VALUES
-  (aircraftid, flightName, departureid, arrivalid, departDate, arrivedate );
+  (aircraftId, flightName, departureId, arrivalGateId, departureGateId, arrivalDate );
   SET last_id = last_insert_id();
 END$$
 DELIMITER ;
@@ -514,9 +523,9 @@ DELIMITER ;
 -- -----------------------------------------------------
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `create_gate`(
-  terminalid int,
+  terminalId int,
   gateName varchar(45),
-  longitutde varchar(45),
+  longitude varchar(45),
   latitude varchar(45),
   out last_id int
 )
@@ -524,7 +533,7 @@ BEGIN
 INSERT INTO
   `airline_db`.`gate` (`Terminal_Id`, `Name`,`Longitude`, `Latitude`)
 VALUES
-  (terminalid, gateName, longitutde, latitude);
+  (terminalId, gateName, longitude, latitude);
   SET last_id = last_insert_id();
 END$$
 DELIMITER ;
@@ -534,7 +543,7 @@ DELIMITER ;
 -- -----------------------------------------------------
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `create_passenger`(
-  passportname varchar(45),
+  passportName varchar(45),
   Firstname varchar(45),
   LastName varchar(45),
   CountryCode varchar(45),
@@ -545,7 +554,7 @@ BEGIN
 INSERT INTO
   `airline_db`.`passenger` (`PassportNumber`, `FirstName`,`LastName`, `CountryCode`,`Email`)
 VALUES
-  (passportname, Firstname, LastName, CountryCode, Email);
+  (passportName, Firstname, LastName, CountryCode, Email);
   SET last_id = last_insert_id();
 END$$
 DELIMITER ;
@@ -592,7 +601,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `create_terminal`(
   AirportID int,
-  AirportName varchar(45),
+  Name varchar(45),
   out last_id int
 )
 BEGIN
