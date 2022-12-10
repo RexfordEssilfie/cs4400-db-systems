@@ -753,9 +753,13 @@ DELIMITER ;
 USE `airline_db`;
 DROP procedure IF EXISTS `fetch_flights_betweenAirports_on_departureDate`;
 
+USE `airline_db`;
+DROP procedure IF EXISTS `airline_db`.`fetch_flights_betweenAirports_on_departureDate`;
+;
+
 DELIMITER $$
 USE `airline_db`$$
-CREATE PROCEDURE `fetch_flights_betweenAirports_on_departureDate` (departureAirportCode varchar(45),arrivalAirportCode varchar(45), departureDate DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `fetch_flights_betweenAirports_on_departureDate`(departureAirportCode varchar(45),arrivalAirportCode varchar(45), departureDate DATETIME)
 BEGIN
 select * from Airline_db.Flight where DepartureGate_Id in 
 (select Id from airline_db.Gate where Terminal_Id in 
@@ -765,8 +769,13 @@ select Id from airline_db.Airport where Abbreviation=departureAirportCode))) and
 ArrivalGate_Id in 
 (select Id from airline_db.Gate where Terminal_Id in 
 (select Id from airline_db.Terminal where Airport_Id  in (
-select Id from airline_db.Airport where Abbreviation=arrivalAirportCode))) and DepartureDate=departureDate;
+select Id from airline_db.Airport where Abbreviation=arrivalAirportCode))) and Airline_db.Flight.DepartureDate=departureDate;
 END$$
+
+DELIMITER ;
+;
+
+
 
 DELIMITER ;
 -- -----------------------------------------------------
