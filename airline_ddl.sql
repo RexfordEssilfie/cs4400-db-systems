@@ -434,12 +434,13 @@ $$ DELIMITER;
 -- STORED PROCEDURE `airline_db`.add_billing_detail
 -- -----------------------------------------------------
 DELIMITER $$
-CREATE PROCEDURE `add_billing_detail`(in FourDigits varchar(45), in Token varchar(45))
+CREATE PROCEDURE `add_billing_detail`(in FourDigits varchar(45), in Token varchar(45), out last_id int)
 BEGIN
 INSERT INTO
   `airline_db`.`billingdetail` (`CardNumberLastFourDigit`, `CardToken`)
 VALUES
   (FourDigits, Token);
+  SET last_id = last_insert_id();
 END
 $$ DELIMITER;
 
@@ -447,7 +448,7 @@ $$ DELIMITER;
 -- STORED PROCEDURE `airline_db`.create_confirmations
 -- -----------------------------------------------------
 DELIMITER $$
-CREATE PROCEDURE `create_confirmations`(in ConfirmationName int, in TicketId int, in passengerid int)
+CREATE PROCEDURE `create_confirmations`(in ConfirmationName int, in TicketId int, in passengerid int, out last_id int)
 BEGIN
 INSERT INTO `airline_db`.`confirmation`
 (`Confirmation_Name`,
@@ -457,30 +458,33 @@ INSERT INTO `airline_db`.`confirmation`
 `Passenger_Id`)
 VALUES
   (ConfirmationName, 'Active', 'curdate()', TicketId, passengerId);
+  SET last_id = last_insert_id();
 END
 $$ DELIMITER;
 -- -----------------------------------------------------
 -- STORED PROCEDURE `airline_db`.create_payments
 -- -----------------------------------------------------
 DELIMITER $$
-CREATE PROCEDURE `create_payments`(in amount int, in DateCreated datetime)
+CREATE PROCEDURE `create_payments`(in amount int, in DateCreated datetime,out last_id int)
 BEGIN
 INSERT INTO
   `airline_db`.`payment` (`Amount`, `DateCreated`)
 VALUES
   (amount, DateCreated);
+  SET last_id = last_insert_id();
 END
 $$ DELIMITER;
 -- -----------------------------------------------------
 -- STORED PROCEDURE `airline_db`.create_trips
 -- -----------------------------------------------------
 DELIMITER $$
-CREATE PROCEDURE `create_trips`(in flightid int, in confirmation int)
+CREATE PROCEDURE `create_trips`(in flightid int, in confirmation int, out last_id int)
 BEGIN
 INSERT INTO
   `airline_db`.`trip` (`'Flight_Id`, `Confirmation_Name`)
 VALUES
   (flightid, confirmation);
+  SET last_id = last_insert_id();
 END
 $$ DELIMITER ;
 
@@ -494,13 +498,15 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `create_flight`(
   departureid int,
   arrivalid int,
   departDate datetime,
-  arrivedate datetime
+  arrivedate datetime,
+  out last_id int
 )
 BEGIN
 INSERT INTO
   `airline_db`.`flight` (`Aircraft_Id`, `Name`,`DepartureGate_Id`, `ArrivalGate_Id`,`DepartureDate`, `ArrivalDate`)
 VALUES
   (aircraftid, flightName, departureid, arrivalid, departDate, arrivedate );
+  SET last_id = last_insert_id();
 END$$
 DELIMITER ;
 -- -----------------------------------------------------
@@ -511,13 +517,15 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `create_gate`(
   terminalid int,
   gateName varchar(45),
   longitutde varchar(45),
-  latitude varchar(45)
+  latitude varchar(45),
+  out last_id int
 )
 BEGIN
 INSERT INTO
   `airline_db`.`gate` (`Terminal_Id`, `Name`,`Longitude`, `Latitude`)
 VALUES
   (terminalid, gateName, longitutde, latitude);
+  SET last_id = last_insert_id();
 END$$
 DELIMITER ;
 
@@ -530,13 +538,15 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `create_passenger`(
   Firstname varchar(45),
   LastName varchar(45),
   CountryCode varchar(45),
-  Email varchar(45)
+  Email varchar(45),
+  out last_id int
 )
 BEGIN
 INSERT INTO
   `airline_db`.`passenger` (`PassportNumber`, `FirstName`,`LastName`, `CountryCode`,`Email`)
 VALUES
   (passportname, Firstname, LastName, CountryCode, Email);
+  SET last_id = last_insert_id();
 END$$
 DELIMITER ;
 
@@ -545,13 +555,15 @@ DELIMITER ;
 -- -----------------------------------------------------
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `create_refund`(
-  PaymentId int
+  PaymentId int,
+  out last_id int
 )
 BEGIN
 INSERT INTO
   `airline_db`.`refund` (`Payment_Id`)
 VALUES
   (PaymentId);
+  SET last_id = last_insert_id();
 END$$
 DELIMITER ;
 
@@ -562,13 +574,15 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `create_seat`(
   AircraftId int,
   ClassId int,
-  SeatName varchar(45)
+  SeatName varchar(45),
+  out last_id int
 )
 BEGIN
 INSERT INTO
   `airline_db`.`seat` (`Aircraft_Id`, `Class_Id`,`Name`)
 VALUES
   (AircraftId, ClassId, SeatName);
+  SET last_id = last_insert_id();
 END$$
 DELIMITER ;
 
@@ -578,13 +592,15 @@ DELIMITER ;
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `create_terminal`(
   AirportID int,
-  AirportName varchar(45)
+  AirportName varchar(45),
+  out last_id int
 )
 BEGIN
 INSERT INTO
   `airline_db`.`terminal` (`Airport_Id`, `Name`)
 VALUES
   (AirportID, AirportName);
+  SET last_id = last_insert_id();
 END$$
 DELIMITER ;
 
@@ -595,13 +611,15 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `create_ticket`(
   FlightId int,
   SeatId int,
-  Price int
+  Price int,
+  out last_id int
 )
 BEGIN
 INSERT INTO
   `airline_db`.`ticket` (`Flight_Id`, `Seat_Id`,`Price`)
 VALUES
   (FlightId, SeatId, Price);
+  SET last_id = last_insert_id();
 END$$
 DELIMITER ;
 
@@ -612,13 +630,15 @@ DELIMITER ;
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `create_ticket_payment`(
   TicketId int,
-  PaymentId int
+  PaymentId int,
+  out last_id int
 )
 BEGIN
 INSERT INTO
   `airline_db`.`ticket_payment` (`Ticket_Id`, `Payment_Id`)
 VALUES
   (TicketId, PaymentId);
+  SET last_id = last_insert_id();
 END$$
 DELIMITER ;
 
@@ -628,13 +648,15 @@ DELIMITER ;
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `create_ticketassignment`(
   ticketid int,
-  passengerid int
+  passengerid int,
+  out last_id int
 )
 BEGIN
 INSERT INTO
   `airline_db`.`ticketassignment` (`Ticket_Id`, `Passenger_Id`)
 VALUES
   (ticketid, passengerid);
+  SET last_id = last_insert_id();
 END$$
 DELIMITER ;
 
@@ -648,13 +670,15 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `create_user`(
   Airline_Id int,
   LastName varchar(45),
   userPassword varchar(45),
-  Email varchar(45)
+  Email varchar(45),
+  out last_id int
 )
 BEGIN
 INSERT INTO
   `airline_db`.`user` (`Firstname`, `Airline_Id`,`LastName`, `Password`,`Email`)
 VALUES
   (FirstName, Airline_Id, LastName, userPassword, Email);
+  SET last_id = last_insert_id();
 END$$
 DELIMITER ;
 
