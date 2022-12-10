@@ -963,6 +963,17 @@ BEGIN
 END$$
 DELIMITER ;
 
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.fetch_ticket_gates
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `fetch_ticket_gates`(in ticketid int)
+BEGIN
+(select t.Flight_Id, airlined_db.DepartureGate_Id, airlined_db.ArrivalGate_Id from airline_db.ticket as t
+	inner join airline_db.flight on t.Flight_Id = airline_db.Flight.Id where airline_db.ticket.Ticket_Id = ticketid);
+END$$
+DELIMITER ;
+
 
 -- -----------------------------------------------------
 -- VIEW `airline_db`.Flight_Populated
