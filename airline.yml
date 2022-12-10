@@ -21,14 +21,20 @@ Airline:
   American_Airline:
     Name: American Airlines
     Code: AA
+    City: Iowa City
+    State: IA
 
   Delta_Airline:
     Name: Delta Airlines
     Code: DL
+    City: Atlanta
+    State: GA
 
   Jetblue_Airline:
     Name: Jet Blue Airlines
     Code: JB
+    City: Dallas
+    State: TX
 
 Class:
   $relations:
@@ -323,23 +329,56 @@ Passenger:
     CountryCode: 3
     LastName: Bose
     Email: rb@uiowa
-   
+
+
+BillingDetail:
+  BillingDetail_1:
+    CardNumberLastFourDigit: 1234
+    CardToken: ABCD
+
+  BillingDetail_2:
+    CardNumberLastFourDigit: 45678
+    CardToken: EFGH
+
+  BillingDetail_3:
+    CardNumberLastFourDigit: 2424
+    CardToken: MNOP
+
+
 Payment:
+  $relations:
+    BillingDetail:
+      pk: Id
+      fk: BillingDetail_Id
 
   Payment_1:
+    $BillingDetail: BillingDetail_1
     Amount: 110
+    Status: Success
     DateCreated: 22-12-06
+
   Payment_2:
+    $BillingDetail: BillingDetail_1
     Amount: 120
+    Status: Success
     DateCreated: 22-12-06
+
   Payment_3:
+    $BillingDetail: BillingDetail_2
     Amount: 130
+    Status: Success
     DateCreated: 22-12-07
+
   Payment_4:
+    $BillingDetail: BillingDetail_3
     Amount: 140
+    Status: Success
     DateCreated: 22-12-07
+
   Payment_5:
+    $BillingDetail: BillingDetail_3
     Amount: 150
+    Status: Success
     DateCreated: 22-12-08
 
 Refund:
@@ -353,8 +392,6 @@ Refund:
   Refund_2:
     $Payment: Payment_2
     
-    
- 
 
 Ticket_Payment:
   $relations:
@@ -369,9 +406,10 @@ Ticket_Payment:
     $Ticket: DL_Boeing447_First_Class_Seat_A1_Ticket
     $Payment: Payment_1
 
-  Ticket_Payment_2:
-    $Ticket: DL_Boeing447_Economy_Class_Seat_B1_Ticket
-    $Payment: Payment_2
+#  Ticket_Payment_2:
+#    $Ticket: DL_Boeing447_Economy_Class_Seat_B1_Ticket
+#    $Payment: Payment_2
+
 
 
 

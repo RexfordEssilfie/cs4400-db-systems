@@ -7,6 +7,11 @@ class Seeder:
     class Query:
         GET = 'get'  # A get query selects a record by a primary key
         SET = 'set'  # A set query inserts a record
+        PROC = 'proc'  # A set query inserts a record
+        PROC_IN = 'proc_in'
+        PROC_OUT = 'proc_out'
+
+
 
     def __init__(self):
         self.connection = None
@@ -39,6 +44,25 @@ class Seeder:
         """
         with open(file, 'r') as fixture_file:
             self.fixture = yaml.safe_load(fixture_file)
+
+
+    def execute_proc(self, proc_name, proc_in_args, proc_out_args, data=None, verbose=True):
+
+        in_args = tuple([data[k] for k in proc_in_args])
+        out_arg_placeholders = tuple([0 for _ in proc_out_args])
+
+        args = (*in_args, *out_arg_placeholders)
+
+        proc_results = self.cursor.callproc(proc_name, args=args)
+
+        out_keys = sorted(proc_results.keys())[-len(out_arg_placeholders):]
+
+        result = { proc_results[k] for k in out_keys }
+
+        raise result
+
+        return result
+
 
     def execute_query(self, query, data=None, verbose=True):
         """
@@ -93,12 +117,17 @@ class Seeder:
         key_column = keys_result['Column_name']
         return key_column.lower()
 
-    def update_inserted_record_key_value(self, table_name, record_name):
+    def update_inserted_record_key_value(self, table_name, record_name, inserted_id=None):
         """
         Given a record_name and the table it belongs to, gets the last inserted row on that table
         and then sets the primary key and value for the record_name.
         """
-        key_value = self.cursor.lastrowid
+
+        if inserted_id:
+            key_value = inserted_id
+        else:
+            key_value = self.cursor.lastrowid
+
         key_column = self.find_table_primary_key(table_name)
 
         table_name = table_name.lower()
@@ -119,6 +148,9 @@ class Seeder:
         table_fixture = self.fixture.get(table_name)
         record_fixture = table_fixture.get(record_name)
         relations = table_fixture.get('$relations')
+
+
+        proc_name = self.get_query(table_name, Seeder.Query.PROC)
 
         insert_query = self.get_query(table_name, Seeder.Query.SET)
 
@@ -163,9 +195,16 @@ class Seeder:
 
         populated_record = {k.lower(): v for k, v in populated_record.items()}
 
-        self.execute_query(insert_query, populated_record)
 
-        self.update_inserted_record_key_value(table_name, record_name)
+        last_insert_id = None
+        if proc_name:
+            proc_in_args = self.get_query(table_name, Seeder.Query.PROC_IN)
+            proc_out_args = self.get_query(table_name, Seeder.Query.PROC_OUT)
+            last_insert_id = self.execute_proc(proc_name, proc_in_args, proc_out_args, populated_record)
+        else:
+            self.execute_query(insert_query, populated_record)
+
+        self.update_inserted_record_key_value(table_name, record_name, last_insert_id)
 
         print('--------')
 
@@ -178,7 +217,7 @@ class Seeder:
                 self.register_query(table_name, kind, query)
 
     def register_query(self, table_name, kind, query):
-        self.queries.setdefault(table_name.lower(), {})[kind] = query.lower()
+        self.queries.setdefault(table_name.lower(), {})[kind] = query.lower() if isinstance(query, str) else query
 
     def unsafe_delete_all_table_rows(self, table_name):
         self.execute_query("SET SQL_SAFE_UPDATES = 0;", verbose=False)
@@ -206,7 +245,7 @@ class Seeder:
 if __name__ == '__main__':
     seeder = Seeder()
 
-    seeder.connect_db(user='root', password='root3069', db='airline_db')
+    seeder.connect_db(user='root', password='mysqladmin', db='airline_db')
 
     seeder.register_fixture('airline.yml')
 
@@ -234,6 +273,9 @@ if __name__ == '__main__':
         },
         'Airline': {
             Seeder.Query.GET: 'SELECT * FROM Airline WHERE Id=%(Id)s;',
+            # Seeder.Query.PROC: 'create_airline',
+            # Seeder.Query.PROC_IN: ['Name', 'Code', 'City', 'State'],
+            # Seeder.Query.PROC_OUT: ['Id'],
             Seeder.Query.SET: 'INSERT INTO Airline ' +
                               '(Name, Code) ' +
                               'VALUES ' +
@@ -247,10 +289,10 @@ if __name__ == '__main__':
         'Flight': {
             Seeder.Query.GET: 'SELECT * FROM Flight WHERE Id=%(Id)s;',
             Seeder.Query.SET: 'INSERT INTO Flight' +
-                              '(Name, Aircraft_Id, DepartureGate_Id, ArrivalGate_Id, ArrivalDate, DepartureDate) ' +
+                              '(Name, Aircraft_Id, DepartureGate_Id, ArrivalGate_Id, ArrivalDate, DepartureDate, Status) ' +
                               'VALUES' +
                               '(%(Name)s, %(Aircraft_Id)s, %(DepartureGate_Id)s, %(ArrivalGate_Id)s, ' +
-                              '%(ArrivalDate)s, %(DepartureDate)s);'
+                              '%(ArrivalDate)s, %(DepartureDate)s, %(Status)s);'
         },
         'Aircraft': {
             Seeder.Query.GET: 'SELECT * FROM Aircraft WHERE Id=%(Id)s;',
@@ -285,14 +327,20 @@ if __name__ == '__main__':
         'Payment': {
             Seeder.Query.GET: 'SELECT * FROM Payment WHERE Id=%(Id)s;',
             Seeder.Query.SET: 'INSERT INTO Payment' +
-                              '(Amount, DateCreated)'+ 'VALUES' +
-                              '(%(Amount)s, %(DateCreated)s);'
+                              '(Amount, DateCreated, BillingDetail_Id, Status)'+ 'VALUES' +
+                              '(%(Amount)s, %(DateCreated)s, %(BillingDetail_Id)s, %(Status)s);'
         },
         'Ticket_Payment': {
             Seeder.Query.GET: 'SELECT * FROM Ticket_Payment WHERE Id=%(Id)s;',
             Seeder.Query.SET: 'INSERT INTO Ticket_Payment' +
                               '(Ticket_Id, Payment_Id)'+ 'VALUES' +
                               '(%(Ticket_Id)s, %(Payment_Id)s);'
+        },
+        'BillingDetail': {
+            Seeder.Query.GET: 'SELECT * FROM BillingDetail WHERE Id=%(Id)s;',
+            Seeder.Query.SET: 'INSERT INTO BillingDetail' +
+                              '(CardNumberLastFourDigit, CardToken)' + 'VALUES' +
+                              '(%(CardNumberLastFourDigit)s, %(CardToken)s);'
         },
         'Refund': {
             Seeder.Query.GET: 'SELECT * FROM Refund WHERE Id=%(Id)s;',
