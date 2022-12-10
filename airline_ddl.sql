@@ -161,6 +161,7 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`Flight` (
   `Id` INT NOT NULL AUTO_INCREMENT,
   `Aircraft_Id` INT NOT NULL,
   `Name` VARCHAR(45) NULL,
+  `Status` VARCHAR(45) NOT NULL,
   `DepartureGate_Id` INT NOT NULL,
   `ArrivalGate_Id` INT NOT NULL,
   `DepartureDate` DATETIME NULL,
@@ -225,7 +226,11 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`Payment` (
   `Id` INT NOT NULL AUTO_INCREMENT,
   `Amount` INT NULL,
   `DateCreated` DATETIME NULL,
-  PRIMARY KEY (`Id`)
+  `BillingDetail_Id` INT NOT NULL,
+  `Status` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`Id`),
+  CONSTRAINT `fk_BillingDetail_Id` FOREIGN KEY (`BillingDetail_Id`) REFERENCES `airline_db`.`BillingDetail` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD INDEX `fk_BillingDetail_Id_idx` (`BillingDetail_Id` ASC) VISIBLE;
 ) ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `idPayment_UNIQUE` ON `airline_db`.`Payment` (`Id` ASC) VISIBLE;
@@ -349,6 +354,7 @@ DROP TABLE IF EXISTS `airline_db`.`User`;
 CREATE TABLE IF NOT EXISTS `airline_db`.`User` (
   `Id` INT NOT NULL AUTO_INCREMENT,
   `FirstName` VARCHAR(45) NULL,
+  `AdvantageMember` BOOL NULL,
   `Airline_Id` INT NOT NULL,
   `LastName` VARCHAR(45) NULL,
   `Password` VARCHAR(45) NULL,

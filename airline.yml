@@ -179,6 +179,7 @@ Flight:
   Flight_DL256:
     $Aircraft: DL_Boeing447
     Name: DL256
+    Status: Active
     $Gate_Departure: ATL_Gate_A1
     $Gate_Arrival: JFK_Gate_B1
     DepartureDate: '2022-09-12 12:30:00'
@@ -187,6 +188,7 @@ Flight:
   Flight_AA139:
     $Aircraft: AA_JetLiner536
     Name: AA139
+    Status: Active
     $Gate_Departure: JFK_Gate_C1
     $Gate_Arrival: ATL_Gate_B1
     DepartureDate: '2022-09-12 12:30:00'
