@@ -983,6 +983,47 @@ BEGIN
 END$$
 DELIMITER ;
 
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.buy_single_ticket
+-- -----------------------------------------------------
+USE `airline_db`;
+DROP procedure IF EXISTS `buy_single_ticket`;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `buy_single_ticket`(
+	in ticket_id int,
+    in passenger_id int,
+	in billing_detail_id int,
+	in amount int,
+    in payment_status varchar(40)
+    )
+sp: BEGIN
+
+   DECLARE ticket_status varchar(40);
+   DECLARE ticket_price varchar(40);
+   DECLARE payment_id int;
+
+   SELECT Price INTO ticket_price FROM Ticket WHERE Ticket_Id=ticket_id;
+
+   SELECT Status INTO ticket_status FROM Confirmation WHERE Ticket_Id=ticket_id AND (STATUS IS NULL OR STATUS NOT IN ("Active"));
+
+   IF (ticket_status IS NULL) THEN
+	LEAVE sp;
+   END IF;
+
+   IF (amount < ticket_price) THEN
+	LEAVE sp;
+   END IF;
+
+
+   INSERT INTO Payment (Amount, BillingDetail_ID) VALUES (amount, billing_detail_id);
+   SET payment_id = LAST_INSERT_ID();
+
+    INSERT INTO Ticket_Payment (Payment_Id, Ticket_Id) VALUES (payment_id, ticket_id);
+
+   INSERT INTO Confirmation (Ticket_Id, Passenger_Id, Confirmation_Date, Status) VALUES (amount, passenger_id, curdate(), "Active");
+END$$
+DELIMITER ;
 
 -- -----------------------------------------------------
 -- VIEW `airline_db`.Flight_Populated
