@@ -745,6 +745,27 @@ select Id from airline_db.Airport where Abbreviation=arrivalAirportCode))) and D
 END$$
 
 DELIMITER ;
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.user_sign_in
+-- -----------------------------------------------------
+USE `airline_db`;
+DROP procedure IF EXISTS `user_sign_in`;
+
+USE `airline_db`;
+DROP procedure IF EXISTS `airline_db`.`user_sign_in`;
+;
+
+DELIMITER $$
+USE `airline_db`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `user_sign_in`(email varchar(45), password varchar(45))
+BEGIN
+select * from airline_db.User where ( airline_db.User.Email = email) and (airline_db.User.Password = password);
+END$$
+
+DELIMITER ;
+;
+
+
 
 -- -----------------------------------------------------
 -- STORED PROCEDURE `airline_db`.select_Aircraft_id
