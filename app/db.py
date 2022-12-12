@@ -61,11 +61,16 @@ class DatabaseHelper:
         result = None
 
         return result
+    
     def create_user(self, Firstname, AirlineId, Lastname, Password, Email):
         result = self.cursor.callproc('create_user', args = (Firstname, AirlineId, Lastname, Password, Email))
         return result
     
     def UserLogin(self, email, password):
         result = self.cursor.callproc('user_login_in', args=(email, password))
+        return result
+        
+    def addbillingdetail(self, userid, cardlastfour, cardtoken):
+        result = self.cursor.callproc('add_billing_detail', args=(userid, cardlastfour, cardtoken))
         return result
 
