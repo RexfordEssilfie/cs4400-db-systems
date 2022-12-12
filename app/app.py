@@ -76,7 +76,7 @@ def purchase_ticket(ticket_id):
         # Attempt purchase, if success, go to confirmation else go to failure page
         # TODO: save passenger info, save billing detail, use stored procedure for ticket purchase
 
-        db_helper.initiate_ticket_payment(
+        db_helper.buy_single_ticket(
             ticket_id=ticket_id,
             card_lastfour=processor_response['lastfour'],
             card_token=processor_response['token'],
