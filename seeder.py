@@ -59,6 +59,7 @@ class Seeder:
 
         args = (*in_args, *out_args_placeholders)
 
+        print('args: ', args)
         proc_results = self.cursor.callproc(proc_name, args=args)
 
         out_args_pos = len(proc_in_args)
@@ -308,7 +309,12 @@ if __name__ == '__main__':
         'Class': {
             Seeder.Query.GET: 'SELECT * FROM Class WHERE Id=%(Id)s;',
             Seeder.Query.SET: 'INSERT INTO Class (Airline_Id, Name, Tier) ' +
-                              'VALUES (%(Airline_Id)s, %(Name)s, %(Tier)s);'
+                              'VALUES (%(Airline_Id)s, %(Name)s, %(Tier)s);',
+
+            Seeder.Query.SET_PROC: 'create_class',
+            Seeder.Query.SET_PROC_IN: ('Name', 'Tier', 'Airline_Id'),
+            Seeder.Query.SET_PROC_OUT: ('Id',),
+            Seeder.Query.SET_PROC_KEY: 'Id',
         },
         'Flight': {
             Seeder.Query.GET: 'SELECT * FROM Flight WHERE Id=%(Id)s;',
@@ -316,7 +322,12 @@ if __name__ == '__main__':
                               '(Name, Aircraft_Id, DepartureGate_Id, ArrivalGate_Id, ArrivalDate, DepartureDate, Status) ' +
                               'VALUES' +
                               '(%(Name)s, %(Aircraft_Id)s, %(DepartureGate_Id)s, %(ArrivalGate_Id)s, ' +
-                              '%(ArrivalDate)s, %(DepartureDate)s, %(Status)s);'
+                              '%(ArrivalDate)s, %(DepartureDate)s, %(Status)s);',
+
+            Seeder.Query.SET_PROC: 'create_flight',
+            Seeder.Query.SET_PROC_IN: ('Aircraft_Id', 'Name', 'DepartureGate_Id', 'ArrivalGate_Id', 'DepartureDate', 'ArrivalDate'),
+            Seeder.Query.SET_PROC_OUT: ('Id',),
+            Seeder.Query.SET_PROC_KEY: 'Id',
         },
         'Aircraft': {
             Seeder.Query.GET: 'SELECT * FROM Aircraft WHERE Id=%(Id)s;',
