@@ -7,9 +7,11 @@ class Seeder:
     class Query:
         GET = 'get'  # A get query selects a record by a primary key
         SET = 'set'  # A set query inserts a record
-        PROC = 'proc'  # A set query inserts a record
-        PROC_IN = 'proc_in'
-        PROC_OUT = 'proc_out'
+
+        SET_PROC = 'set_proc'  # A proc name
+        SET_PROC_IN = 'set_proc_in'
+        SET_PROC_OUT = 'set_proc_out'
+        SET_PROC_KEY = 'set_proc_key'
 
 
 
@@ -47,19 +49,24 @@ class Seeder:
 
 
     def execute_proc(self, proc_name, proc_in_args, proc_out_args, data=None, verbose=True):
+        print("Running Proc:", proc_name, data if data else '') if verbose else None
+
+        proc_out_args = [k.lower() for k in proc_out_args]
+        proc_in_args = [k.lower() for k in proc_in_args]
 
         in_args = tuple([data[k] for k in proc_in_args])
-        out_arg_placeholders = tuple([0 for _ in proc_out_args])
+        out_args_placeholders = tuple([0 for _ in proc_out_args])
 
-        args = (*in_args, *out_arg_placeholders)
+        args = (*in_args, *out_args_placeholders)
 
         proc_results = self.cursor.callproc(proc_name, args=args)
 
-        out_keys = sorted(proc_results.keys())[-len(out_arg_placeholders):]
+        out_args_pos = len(proc_in_args)
+        out_query_result_keys = sorted(proc_results.keys())[out_args_pos:]
 
-        result = { proc_results[k] for k in out_keys }
+        out_arg_results = [proc_results[k] for k in out_query_result_keys]
 
-        raise result
+        result = dict(zip(proc_out_args, out_arg_results))
 
         return result
 
@@ -149,8 +156,7 @@ class Seeder:
         record_fixture = table_fixture.get(record_name)
         relations = table_fixture.get('$relations')
 
-
-        proc_name = self.get_query(table_name, Seeder.Query.PROC)
+        proc_name = self.get_query(table_name, Seeder.Query.SET_PROC)
 
         insert_query = self.get_query(table_name, Seeder.Query.SET)
 
@@ -198,9 +204,12 @@ class Seeder:
 
         last_insert_id = None
         if proc_name:
-            proc_in_args = self.get_query(table_name, Seeder.Query.PROC_IN)
-            proc_out_args = self.get_query(table_name, Seeder.Query.PROC_OUT)
-            last_insert_id = self.execute_proc(proc_name, proc_in_args, proc_out_args, populated_record)
+            proc_in_args = self.get_query(table_name, Seeder.Query.SET_PROC_IN)
+            proc_out_args = self.get_query(table_name, Seeder.Query.SET_PROC_OUT)
+            result = self.execute_proc(proc_name, proc_in_args, proc_out_args, populated_record)
+
+            proc_insert_key = self.get_query(table_name, Seeder.Query.SET_PROC_KEY)
+            last_insert_id = result[proc_insert_key.lower()]
         else:
             self.execute_query(insert_query, populated_record)
 
@@ -255,14 +264,25 @@ if __name__ == '__main__':
             Seeder.Query.SET: 'INSERT INTO Airport' +
                               '(Abbreviation, City, State, Name) ' +
                               'VALUES ' +
-                              '(%(Abbreviation)s, %(City)s, %(State)s, %(Name)s);'
+                              '(%(Abbreviation)s, %(City)s, %(State)s, %(Name)s);',
+
+            Seeder.Query.SET_PROC: 'create_airport',
+            Seeder.Query.SET_PROC_IN: ('Abbreviation', 'City', 'Name', 'State'),
+            Seeder.Query.SET_PROC_OUT: ('Id',),
+            Seeder.Query.SET_PROC_KEY: 'Id',
         },
         'Terminal': {
             Seeder.Query.GET: 'SELECT * FROM Terminal WHERE Id=%(Id)s;',
             Seeder.Query.SET: 'INSERT INTO Terminal' +
                               '(Airport_Id, Name) ' +
                               'VALUES ' +
-                              '(%(Airport_Id)s, %(Name)s);'
+                              '(%(Airport_Id)s, %(Name)s);',
+
+            Seeder.Query.SET_PROC: 'create_terminal',
+            Seeder.Query.SET_PROC_IN: ('Airport_Id', 'Name'),
+            Seeder.Query.SET_PROC_OUT: ('Id',),
+            Seeder.Query.SET_PROC_KEY: 'Id',
+
         },
         'Gate': {
             Seeder.Query.GET: 'SELECT * FROM Gate WHERE Id=%(Id)s;',
@@ -273,13 +293,17 @@ if __name__ == '__main__':
         },
         'Airline': {
             Seeder.Query.GET: 'SELECT * FROM Airline WHERE Id=%(Id)s;',
-            # Seeder.Query.PROC: 'create_airline',
-            # Seeder.Query.PROC_IN: ['Name', 'Code', 'City', 'State'],
-            # Seeder.Query.PROC_OUT: ['Id'],
             Seeder.Query.SET: 'INSERT INTO Airline ' +
-                              '(Name, Code) ' +
+                              '(Name, Code, City, State) ' +
                               'VALUES ' +
-                              '(%(Name)s, %(Code)s);'
+                              '(%(Name)s, %(Code)s, %(City)s,  %(State)s);',
+
+            Seeder.Query.SET_PROC: 'create_airline',
+            Seeder.Query.SET_PROC_IN: ('Name', 'Code', 'City', 'State'),
+            Seeder.Query.SET_PROC_OUT: ('Id',),
+            Seeder.Query.SET_PROC_KEY: 'Id',
+            
+            
         },
         'Class': {
             Seeder.Query.GET: 'SELECT * FROM Class WHERE Id=%(Id)s;',
@@ -298,7 +322,12 @@ if __name__ == '__main__':
             Seeder.Query.GET: 'SELECT * FROM Aircraft WHERE Id=%(Id)s;',
             Seeder.Query.SET: 'INSERT INTO Aircraft' +
                               '(Name, Airline_Id, Model, Capacity)'+ 'VALUES' +
-                              '(%(Name)s, %(Airline_Id)s, %(Model)s, %(Capacity)s);'
+                              '(%(Name)s, %(Airline_Id)s, %(Model)s, %(Capacity)s);',
+
+            Seeder.Query.SET_PROC: 'create_aircraft',
+            Seeder.Query.SET_PROC_IN: ('Airline_Id', 'Name'),
+            Seeder.Query.SET_PROC_OUT: ('Id',),
+            Seeder.Query.SET_PROC_KEY: 'Id',
         },
         'Seat': {
             Seeder.Query.GET: 'SELECT * FROM Seat WHERE Id=%(Id)s;',
