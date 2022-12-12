@@ -379,14 +379,24 @@ if __name__ == '__main__':
         'BillingDetail': {
             Seeder.Query.GET: 'SELECT * FROM BillingDetail WHERE Id=%(Id)s;',
             Seeder.Query.SET: 'INSERT INTO BillingDetail' +
-                              '(CardNumberLastFourDigit, CardToken)' + 'VALUES' +
-                              '(%(CardNumberLastFourDigit)s, %(CardToken)s);'
+                              '(User_Id, CardNumberLastFourDigit, CardToken)' + 'VALUES' +
+                              '((%(User_Id)s, %(CardNumberLastFourDigit)s, %(CardToken)s);',
+            
+            Seeder.Query.SET_PROC: 'add_billing_detail',
+            Seeder.Query.SET_PROC_IN: ('UserId', 'CardNumberLastFour', 'CardToken'),
+            Seeder.Query.SET_PROC_OUT: ('Id',),
+            Seeder.Query.SET_PROC_KEY: 'Id',
         },
         'Refund': {
             Seeder.Query.GET: 'SELECT * FROM Refund WHERE Id=%(Id)s;',
             Seeder.Query.SET: 'INSERT INTO Refund' +
                               '(Payment_Id)'+ 'VALUES' +
-                              '(%(Payment_Id)s);'
+                              '(%(Payment_Id)s);',
+            
+            Seeder.Query.SET_PROC: 'create_refund',
+            Seeder.Query.SET_PROC_IN: ('Id', 'PaymentId'),
+            Seeder.Query.SET_PROC_OUT: ('Id',),
+            Seeder.Query.SET_PROC_KEY: 'Id',
         },
     })
 
