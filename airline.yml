@@ -286,7 +286,7 @@ User:
       fk: Airline_Id
     
   # American Airlines
-  Ruapnti:
+  Rupanti:
     $Airline: American_Airline
     FirstName: Rupanti
     LastName: Bose
@@ -332,15 +332,23 @@ Passenger:
 
 
 BillingDetail:
+  $relations:
+    User:
+      pk: Id
+      fk: User_Id
+
   BillingDetail_1:
+    $User: Rupanti
     CardNumberLastFourDigit: 1234
     CardToken: ABCD
 
   BillingDetail_2:
+    $User: Rexford
     CardNumberLastFourDigit: 45678
     CardToken: EFGH
 
   BillingDetail_3:
+    $User: Cameron
     CardNumberLastFourDigit: 2424
     CardToken: MNOP
 

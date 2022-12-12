@@ -413,7 +413,7 @@ if __name__ == '__main__':
                               '((%(User_Id)s, %(CardNumberLastFourDigit)s, %(CardToken)s);',
             
             Seeder.Query.SET_PROC: 'add_billing_detail',
-            Seeder.Query.SET_PROC_IN: ('UserId', 'CardNumberLastFour', 'CardToken'),
+            Seeder.Query.SET_PROC_IN: ('User_Id', 'CardNumberLastFourDigit', 'CardToken'),
             Seeder.Query.SET_PROC_OUT: ('Id',),
             Seeder.Query.SET_PROC_KEY: 'Id',
         },
@@ -424,7 +424,7 @@ if __name__ == '__main__':
                               '(%(Payment_Id)s);',
             
             Seeder.Query.SET_PROC: 'create_refund',
-            Seeder.Query.SET_PROC_IN: ('Id', 'PaymentId'),
+            Seeder.Query.SET_PROC_IN: ('Payment_Id',),
             Seeder.Query.SET_PROC_OUT: ('Id',),
             Seeder.Query.SET_PROC_KEY: 'Id',
         },
