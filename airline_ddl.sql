@@ -457,12 +457,12 @@ $$ DELIMITER;
 -- STORED PROCEDURE `airline_db`.add_billing_detail
 -- -----------------------------------------------------
 DELIMITER $$
-CREATE PROCEDURE `add_billing_detail`(in FourDigits varchar(45), in Token varchar(45), out last_id int)
+CREATE PROCEDURE `add_billing_detail`(in UserId int, in FourDigits varchar(45), in Token varchar(45), out last_id int)
 BEGIN
 INSERT INTO
-  `airline_db`.`billingdetail` (`CardNumberLastFourDigit`, `CardToken`)
+  `airline_db`.`billingdetail` (`User_Id`,`CardNumberLastFourDigit`, `CardToken`)
 VALUES
-  (FourDigits, Token);
+  (UserId, FourDigits, Token);
   SET last_id = last_insert_id();
 END
 $$ DELIMITER;
