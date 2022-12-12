@@ -344,37 +344,67 @@ if __name__ == '__main__':
             Seeder.Query.GET: 'SELECT * FROM Seat WHERE Id=%(Id)s;',
             Seeder.Query.SET: 'INSERT INTO Seat' +
                               '(Name, Aircraft_Id, Class_Id)'+ 'VALUES' +
-                              '(%(Name)s, %(Aircraft_Id)s, %(Class_Id)s);'
+                              '(%(Name)s, %(Aircraft_Id)s, %(Class_Id)s);',
+
+            Seeder.Query.SET_PROC: 'create_seat',
+            Seeder.Query.SET_PROC_IN: ('Aircraft_Id', 'Class_Id', 'Name'),
+            Seeder.Query.SET_PROC_OUT: ('Id',),
+            Seeder.Query.SET_PROC_KEY: 'Id',
         },
         'Ticket': {
             Seeder.Query.GET: 'SELECT * FROM Ticket WHERE Id=%(Id)s;',
             Seeder.Query.SET: 'INSERT INTO Ticket' +
                               '(Price, Flight_Id, Seat_Id)'+ 'VALUES' +
-                              '(%(Price)s, %(Flight_Id)s, %(Seat_Id)s);'
+                              '(%(Price)s, %(Flight_Id)s, %(Seat_Id)s);',
+
+            Seeder.Query.SET_PROC: 'create_ticket',
+            Seeder.Query.SET_PROC_IN: ('Flight_Id', 'Seat_Id', 'Price'),
+            Seeder.Query.SET_PROC_OUT: ('Id',),
+            Seeder.Query.SET_PROC_KEY: 'Id',
         },
         'User':{
             Seeder.Query.GET: 'SELECT * FROM User WHERE Id=%(Id)s;',
             Seeder.Query.SET: 'INSERT INTO User' +
                               '(Airline_Id, FirstName, LastName,Email,Password)'+ 'VALUES' +
-                              '(%(Airline_Id)s, %(FirstName)s, %(LastName)s,%(Email)s,%(Password)s);'
+                              '(%(Airline_Id)s, %(FirstName)s, %(LastName)s,%(Email)s,%(Password)s);',
+
+            Seeder.Query.SET_PROC: 'create_user',
+            Seeder.Query.SET_PROC_IN: ('FirstName', 'Airline_Id', 'LastName', 'Password', 'Email'),
+            Seeder.Query.SET_PROC_OUT: ('Id',),
+            Seeder.Query.SET_PROC_KEY: 'Id',
             },
         'Passenger':{
             Seeder.Query.GET: 'SELECT * FROM Passenger WHERE Id=%(Id)s;',
             Seeder.Query.SET: 'INSERT INTO Passenger' +
                               '(PassportNumber, FirstName, LastName,CountryCode,Email)'+ 'VALUES' +
-                              '(%(PassportNumber)s, %(FirstName)s, %(LastName)s,%(CountryCode)s,%(Email)s);'
+                              '(%(PassportNumber)s, %(FirstName)s, %(LastName)s,%(CountryCode)s,%(Email)s);',
+
+            Seeder.Query.SET_PROC: 'create_passenger',
+            Seeder.Query.SET_PROC_IN: ('PassportNumber', 'FirstName', 'LastName', 'CountryCode', 'Email'),
+            Seeder.Query.SET_PROC_OUT: ('Id',),
+            Seeder.Query.SET_PROC_KEY: 'Id',
             },
         'Payment': {
             Seeder.Query.GET: 'SELECT * FROM Payment WHERE Id=%(Id)s;',
             Seeder.Query.SET: 'INSERT INTO Payment' +
                               '(Amount, DateCreated, BillingDetail_Id, Status)'+ 'VALUES' +
-                              '(%(Amount)s, %(DateCreated)s, %(BillingDetail_Id)s, %(Status)s);'
+                              '(%(Amount)s, %(DateCreated)s, %(BillingDetail_Id)s, %(Status)s);',
+
+            Seeder.Query.SET_PROC: 'create_payment',
+            Seeder.Query.SET_PROC_IN: ('Amount', 'BillingDetail_Id'),
+            Seeder.Query.SET_PROC_OUT: ('Id',),
+            Seeder.Query.SET_PROC_KEY: 'Id',
         },
         'Ticket_Payment': {
             Seeder.Query.GET: 'SELECT * FROM Ticket_Payment WHERE Id=%(Id)s;',
             Seeder.Query.SET: 'INSERT INTO Ticket_Payment' +
                               '(Ticket_Id, Payment_Id)'+ 'VALUES' +
-                              '(%(Ticket_Id)s, %(Payment_Id)s);'
+                              '(%(Ticket_Id)s, %(Payment_Id)s);',
+
+            Seeder.Query.SET_PROC: 'create_ticket_payment',
+            Seeder.Query.SET_PROC_IN: ('Ticket_Id', 'Payment_Id'),
+            Seeder.Query.SET_PROC_OUT: ('Id',),
+            Seeder.Query.SET_PROC_KEY: 'Id',
         },
         'BillingDetail': {
             Seeder.Query.GET: 'SELECT * FROM BillingDetail WHERE Id=%(Id)s;',
