@@ -487,12 +487,15 @@ $$ DELIMITER;
 -- STORED PROCEDURE `airline_db`.create_payment
 -- -----------------------------------------------------
 DELIMITER $$
-CREATE PROCEDURE `create_payment`(in amount int,out last_id int)
+CREATE PROCEDURE `create_payment`(
+    in amount int,
+    in billing_detail_id int,
+    out last_id int)
 BEGIN
 INSERT INTO
-  `airline_db`.`payment` (`Amount`, `DateCreated`)
+  `airline_db`.`payment` (`Amount`, `BillingDetail_Id`, `Status`, `DateCreated`)
 VALUES
-  (amount, curdate());
+  (amount, billing_detail_id, "NEW",  curdate());
   SET last_id = last_insert_id();
 END
 $$ DELIMITER;
