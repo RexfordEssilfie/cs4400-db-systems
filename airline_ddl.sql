@@ -443,11 +443,11 @@ $$ DELIMITER;
 -- STORED PROCEDURE `airline_db`.create_class
 -- -----------------------------------------------------
 DELIMITER $$ 
-CREATE PROCEDURE `create_class` (in name varchar(45), in tier int, out last_id int) BEGIN
+CREATE PROCEDURE `create_class` (in name varchar(45), in tier int, in airline_id int, out last_id int) BEGIN
 INSERT INTO
-  `airline_db`.`Class` (`Name`, `Tier`)
+  `airline_db`.`Class` (`Name`, `Tier`, `Airline_Id`)
 VALUES
-  (name, tier);
+  (name, tier, airline_id);
 SET last_id = last_insert_id();
 END
 $$ DELIMITER;
@@ -504,17 +504,17 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `create_flight`(
   aircraftId int,
   flightName varchar(45),
-  departureId int,
+  departureGateId int,
   arrivalGateId int,
-  departureGateId datetime,
+  departureDate datetime,
   arrivalDate datetime,
   out last_id int
 )
 BEGIN
 INSERT INTO
-  `airline_db`.`flight` (`Aircraft_Id`, `Name`,`DepartureGate_Id`, `ArrivalGate_Id`,`DepartureDate`, `ArrivalDate`)
+  `airline_db`.`flight` (`Aircraft_Id`, `Name`,`DepartureGate_Id`, `ArrivalGate_Id`,`DepartureDate`, `ArrivalDate`, `Status`)
 VALUES
-  (aircraftId, flightName, departureId, arrivalGateId, departureGateId, arrivalDate );
+  (aircraftId, flightName, departureGateId, arrivalGateId, departureDate, arrivalDate, 'Scheduled' );
   SET last_id = last_insert_id();
 END$$
 DELIMITER ;
@@ -600,15 +600,15 @@ DELIMITER ;
 -- -----------------------------------------------------
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `create_terminal`(
-  AirportID int,
-  Name varchar(45),
+  in AirportID int,
+  in Name varchar(45),
   out last_id int
 )
 BEGIN
 INSERT INTO
   `airline_db`.`terminal` (`Airport_Id`, `Name`)
 VALUES
-  (AirportID, AirportName);
+  (AirportID, Name);
   SET last_id = last_insert_id();
 END$$
 DELIMITER ;
