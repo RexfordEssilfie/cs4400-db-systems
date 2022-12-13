@@ -7,7 +7,7 @@ from app.db import DatabaseHelper
 
 app = Flask(__name__)
 
-db_helper = DatabaseHelper(user='root', password='mysqladmin', db='airline_db')
+db = DatabaseHelper(user='root', password='mysqladmin', db='airline_db')
 
 Bootstrap(app)
 
@@ -34,24 +34,24 @@ def flights():
     flight_from = request.args.get('from')
     flight_to = request.args.get('to')
 
-    flight_results = db_helper.get_flights_from_to(flight_from, flight_to) or []
+    flight_results = db.get_flights_from_to(flight_from, flight_to) or []
 
     return render_template('flights.html.jinja', result=flight_results)
 
 
 @app.get("/flights/<int:flight_id>/tickets")
 def flight_tickets(flight_id):
-    tickets = db_helper.get_available_tickets_by_flight_id(flight_id)
+    tickets = db.get_available_tickets_by_flight_id(flight_id)
 
-    flight = db_helper.get_flight_by_id(flight_id)
+    flight = db.get_flight_by_id(flight_id)
 
     return render_template('tickets.html.jinja', result={'tickets': tickets, 'flight': flight})
 
 
 @app.get("/checkout/<int:ticket_id>")
 def checkout(ticket_id):
-    ticket = db_helper.get_ticket_by_id(ticket_id)
-    flight = db_helper.get_flight_by_id(ticket['flight_id'])
+    ticket = db.get_ticket_by_id(ticket_id)
+    flight = db.get_flight_by_id(ticket['flight_id'])
 
     return render_template('checkout.html.jinja', result={'ticket': ticket, 'flight': flight})
 
@@ -60,7 +60,7 @@ def checkout(ticket_id):
 def purchase_ticket(ticket_id):
     try:
         form_data = {}
-        ticket = db_helper.get_ticket_by_id(ticket_id)
+        ticket = db.get_ticket_by_id(ticket_id)
 
         amount = ticket['price']
 
@@ -70,16 +70,24 @@ def purchase_ticket(ticket_id):
 
         print(form_data)
 
-        processor_response = send_billing_to_processor(form_data['billingdetail'], amount)
+
+        billing_detail = form_data['billingdetail']
 
 
-        # Attempt purchase, if success, go to confirmation else go to failure page
-        # TODO: save passenger info, save billing detail, use stored procedure for ticket purchase
+        processor_response = send_billing_to_processor(billing_detail, amount)
 
-        db_helper.buy_single_ticket(
+        billing_detail_id = db.add_billing_detail(None, processor_response['lastfour'], processor_response['token'])['id']
+
+        passenger = form_data['passenger']
+        passenger_id = db.create_passenger(first_name=passenger['firstname'],
+                                           last_name=passenger['lastname'],
+                                           passport_number=passenger['passportno'],
+                                           email=passenger['email'])['id']
+
+        db.buy_single_ticket(
             ticket_id=ticket_id,
-            card_lastfour=processor_response['lastfour'],
-            card_token=processor_response['token'],
+            passenger_id=passenger_id,
+            billing_detail_id=billing_detail_id,
             amount=amount,
             processor_status=processor_response['status']
         )
@@ -95,7 +103,10 @@ def purchase_ticket(ticket_id):
 def purchase_confirmation(ticket_id):
     # TODO: Confirmation page
     #  Fetch ticket and display its status
-    return render_template('status.html.jinja')
+
+    ticket = db.get_ticket_by_id(ticket_id)
+
+    return render_template('status.html.jinja', result=ticket)
 
 
 @app.get("/error/<int:ticket_id>")
@@ -106,7 +117,7 @@ def purchase_error(ticket_id):
 def send_billing_to_processor(details, amount):
     private_pieces = (details['cardno'] + details['cvv']).encode()
     return {'lastfour': details['cardno'][-4:],
-            'token': hashlib.sha256(private_pieces).hexdigest(),
+            'token': hashlib.sha256(private_pieces).hexdigest()[0:45],
             'status': 'success',
             'amount': amount
             }
