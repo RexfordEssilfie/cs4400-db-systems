@@ -136,7 +136,7 @@ CREATE INDEX `fk_Class_Airline1_idx` ON `airline_db`.`Class` (`Airline_Id` ASC) 
 DROP TABLE IF EXISTS `airline_db`.`Confirmation`;
 
 CREATE TABLE IF NOT EXISTS `airline_db`.`Confirmation` (
-  `Confirmation_Name` INT NOT NULL,
+  `Confirmation_Name` INT NOT NULL AUTO_INCREMENT,
   `Status` VARCHAR(45) NULL,
   `ConfirmationDate` DATETIME NULL,
   `Ticket_Id` INT NOT NULL,
@@ -432,9 +432,8 @@ SELECT
   *
 from
   Ticket
-  left join Confirmation on Ticket.Id = Confirmation.Ticket_id
-WHERE
-  Confirmation.Status != "Active";
+  LEFT JOIN Confirmation on Ticket.Id = Confirmation.Ticket_id
+WHERE Ticket.Flight_Id=flight_id AND (Confirmation.Status IS NULL OR Confirmation.Status NOT IN ("Active"));
 END 
 $$ DELIMITER;
 
@@ -765,19 +764,14 @@ DELIMITER ;
 USE `airline_db`;
 DROP procedure IF EXISTS `fetch_flights_betweenAirports_on_departureDate`;
 
-USE `airline_db`;
-DROP procedure IF EXISTS `airline_db`.`fetch_flights_betweenAirports_on_departureDate`;
-;
-
 DELIMITER $$
 USE `airline_db`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `fetch_flights_betweenAirports_on_departureDate`(departureAirportCode varchar(45),arrivalAirportCode varchar(45), departureDate DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `fetch_flights_betweenAirports_on_departureDate`(departureAirportCode varchar(45),arrivalAirportCode varchar(45), departureDate DATETIME, out return_id int)
 BEGIN
-select * from Airline_db.Flight where DepartureGate_Id in 
+select Id INTO return_id from Airline_db.Flight where DepartureGate_Id in
 (select Id from airline_db.Gate where Terminal_Id in 
 (select Id from airline_db.Terminal where Airport_Id  in (
-select Id from airline_db.Airport where Abbreviation=departureAirportCode))) and 
-
+select Id from airline_db.Airport where Abbreviation=departureAirportCode))) and
 ArrivalGate_Id in 
 (select Id from airline_db.Gate where Terminal_Id in 
 (select Id from airline_db.Terminal where Airport_Id  in (
@@ -1014,30 +1008,30 @@ sp: BEGIN
 
    START TRANSACTION;
 
-   SELECT Status INTO ticket_status FROM Confirmation WHERE Ticket_Id=ticket_id AND (STATUS IS NULL OR STATUS NOT IN ("Active"));
+   SELECT distinctrow Confirmation.Status INTO ticket_status FROM Confirmation WHERE Confirmation.Ticket_Id=ticket_id AND Confirmation.Status IN ("Active");
 
    SAVEPOINT point1;
 
-   IF (ticket_status IS NULL) THEN
+   IF (ticket_status IS NOT NULL) THEN
     ROLLBACK TO point1;
 	LEAVE sp;
    END IF;
 
    SAVEPOINT point2;
 
-   SELECT Price INTO ticket_price FROM Ticket WHERE Ticket_Id=ticket_id;
+   SELECT Price INTO ticket_price FROM Ticket WHERE Id=ticket_id;
 
    IF (amount < ticket_price) THEN
 	ROLLBACK TO point2;
 	LEAVE sp;
    END IF;
 
-   INSERT INTO Payment (Amount, BillingDetail_ID) VALUES (amount, billing_detail_id);
+   INSERT INTO Payment (Amount, BillingDetail_ID, Status) VALUES (amount, billing_detail_id, payment_status);
    SET payment_id = LAST_INSERT_ID();
 
    INSERT INTO Ticket_Payment (Payment_Id, Ticket_Id) VALUES (payment_id, ticket_id);
 
-   INSERT INTO Confirmation (Ticket_Id, Passenger_Id, Confirmation_Date, Status) VALUES (amount, passenger_id, curdate(), "Active");
+   INSERT INTO Confirmation (Ticket_Id, Passenger_Id, ConfirmationDate, Status) VALUES (ticket_id, passenger_id, curdate(), "Active");
 
    COMMIT;
 END$$
@@ -1083,6 +1077,27 @@ COMMIT;
 END$$
 DELIMITER ;
 
+
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.create_passenger_from_user
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_passenger_from_user`(in user_id int, in passport_number varchar(45), out last_id int)
+BEGIN
+
+DECLARE first_name varchar(40);
+DECLARE last_name varchar(40);
+DECLARE email varchar(40);
+
+
+SELECT FirstName, LastName, Email INTO first_name, last_name, email FROM User WHERE Id=user_id;
+
+INSERT INTO Passenger (FirstName, LastName, Email, PassportNumber) VALUES (first_name, last_name, email, passport_number);
+
+SET last_id = last_insert_id();
+END$$
+DELIMITER ;
 
 -- -----------------------------------------------------
 -- VIEW `airline_db`.Flight_Populated
