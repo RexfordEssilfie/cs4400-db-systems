@@ -9,7 +9,32 @@
 {% block content %}
 
 
-<h1>Status - result['status']</h1>
+<h1>Status - {{ 'Booked' if result['confirmation_status'] == 'Active' else 'Not Booked' }}</h1>
+
+<p>{{ 'Your flight has been successfully booked!' if result['confirmation_status'] == 'Active' else 'This ticket is available for booking.' }}</p>
+
+<table class="table">
+  <thead>
+    <th>Ticket Number</th>
+    <th>Seat</th>
+    <th>Class</th>
+    <th>Price</th>
+    <th></th>
+  </thead>
+
+
+  <tbody>
+    <tr>
+      <td>#{{ result['id'] }}</td>
+      <td>{{ result['seat_name'] }}</td>
+      <td>{{ result['class_name'] }}</td>
+      <td>${{ result['price'] }}</td>
+    </tr>
+  </tbody>
+
+
+
+</table>
 
 
 {% endblock %}
