@@ -215,7 +215,7 @@ CREATE TABLE IF NOT EXISTS `airline_db`.`Passenger` (
 
 CREATE UNIQUE INDEX `Id_UNIQUE` ON `airline_db`.`Passenger` (`Id` ASC) VISIBLE;
 
-CREATE UNIQUE INDEX `PassportNumber_UNIQUE` ON `airline_db`.`Passenger` (`PassportNumber` ASC) VISIBLE;
+-- CREATE UNIQUE INDEX `PassportNumber_UNIQUE` ON `airline_db`.`Passenger` (`PassportNumber` ASC) VISIBLE;
 
 -- -----------------------------------------------------
 -- Table `airline_db`.`Payment`
@@ -456,13 +456,24 @@ $$ DELIMITER;
 -- STORED PROCEDURE `airline_db`.add_billing_detail
 -- -----------------------------------------------------
 DELIMITER $$
-CREATE PROCEDURE `add_billing_detail`(in UserId int, in FourDigits varchar(45), in Token varchar(45), out last_id int)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_billing_detail`(in UserId int, in FourDigits varchar(45), in Token varchar(45), out last_id int)
 BEGIN
-INSERT INTO
+
+   DECLARE existing_id varchar(45);
+
+   SELECT distinctrow Id INTO existing_id FROM BillingDetail WHERE BillingDetail.CardToken=Token;
+
+   IF (existing_id IS NOT NULL) THEN
+       SET last_id = existing_id;
+    ELSE
+       INSERT INTO
   `airline_db`.`billingdetail` (`User_Id`,`CardNumberLastFourDigit`, `CardToken`)
-VALUES
+   VALUES
   (UserId, FourDigits, Token);
   SET last_id = last_insert_id();
+   END IF;
+
+
 END
 $$ DELIMITER;
 
@@ -1051,6 +1062,52 @@ IF departuredate <= arrivalDate THEN
 END IF;
 
 COMMIT;
+END$$
+DELIMITER ;
+
+
+-- -----------------------------------------------------
+-- STORED PROCEDURE `airline_db`.fetch_flights_from_to_v2
+-- -----------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `fetch_flights_from_to_v2`(in departureAirportCode varchar(40), in arrivalAirportCode varchar(40))
+BEGIN
+SELECT
+        `flight`.`Id` AS `Id`,
+        `flight`.`Aircraft_Id` AS `Aircraft_Id`,
+        `flight`.`Name` AS `Name`,
+        `flight`.`DepartureGate_Id` AS `DepartureGate_Id`,
+        `flight`.`ArrivalGate_Id` AS `ArrivalGate_Id`,
+        `flight`.`DepartureDate` AS `DepartureDate`,
+        `flight`.`ArrivalDate` AS `ArrivalDate`,
+        `G1`.`Name` AS `DepartureGate_Name`,
+        `G2`.`Name` AS `ArrivalGate_Name`,
+        `C1`.`Name` AS `Aircraft_Name`,
+        `L1`.`Name` AS `Airline_Name`,
+        `T1`.`Name` AS `DepartureTerminal_Name`,
+        `T2`.`Name` AS `ArrivalTerminal_Name`,
+        `A1`.`Name` AS `DepartureAirport_Name`,
+        `A2`.`Name` AS `ArrivalAirport_Name`,
+        `A1`.`Abbreviation` AS `DepartureAirport_Abbreviation`,
+        `A2`.`Abbreviation` AS `ArrivalAirport_Abbreviation`
+    FROM
+        ((((((((`flight`
+        LEFT JOIN `gate` `G1` ON ((`flight`.`DepartureGate_Id` = `G1`.`Id`)))
+        LEFT JOIN `gate` `G2` ON ((`flight`.`ArrivalGate_Id` = `G2`.`Id`)))
+        LEFT JOIN `aircraft` `C1` ON ((`flight`.`Aircraft_Id` = `C1`.`Id`)))
+        LEFT JOIN `terminal` `T1` ON ((`G1`.`Terminal_Id` = `T1`.`Id`)))
+        LEFT JOIN `terminal` `T2` ON ((`G2`.`Terminal_Id` = `T2`.`Id`)))
+        LEFT JOIN `airport` `A1` ON ((`T1`.`Airport_Id` = `A1`.`Id`)))
+        LEFT JOIN `airport` `A2` ON ((`T2`.`Airport_Id` = `A2`.`Id`)))
+        LEFT JOIN `airline` `L1` ON ((`C1`.`Airline_Id` = `L1`.`Id`)))
+
+	where DepartureGate_Id in (select Id from airline_db.Gate where Terminal_Id in (select Id from airline_db.Terminal where Airport_Id  in (select Id from airline_db.Airport where Abbreviation=departureAirportCode))) and
+    ArrivalGate_Id in (
+         select Id from airline_db.Gate where Terminal_Id in
+         (
+           select Id from airline_db.Terminal where Airport_Id  in
+           (
+             select Id from airline_db.Airport where Abbreviation=arrivalAirportCode)));
 END$$
 DELIMITER ;
 
